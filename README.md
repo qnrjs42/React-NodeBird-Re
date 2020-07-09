@@ -38,3 +38,50 @@ Row, Col 배치할 때 Row하고 Col // 가로, 세로
 
 반응형 개발할 때 모바일 디자인을 먼저하고 다음엔 태블릿 다음엔 데스크탑 순으로 해야한다
 반대로 하면 괴롭다
+
+-------------------------------------------------------------------------------------------------------------------------
+
+<div style={{ marginTop: '10px' }}>
+
+인라인 스타일은 최적화가 되지 않는다
+
+스타일 객체로 주면 안 된다 {} === {} -> false
+
+-----------------------------------------------------------------
+
+import styled from 'styled-components'
+
+const ButtonWrapper = styled.div `
+    margin-top: 10px;
+`;
+
+<ButtonWrapper>
+    <Button type="primary" htmlType="submit" loading={false}>로그인</Button>
+    <Link href="/signup"><a><Button>회원가입</Button></a></Link>
+</ButtonWrapper>
+
+-----------------------------------------------------------------
+
+이미 컴포넌트 이름이 정해진 경우는 (Input.Search)
+
+const SearchInput = styled(Input.Search)`
+  verticalalign: middle
+`;
+
+<Menu.Item>
+    <SearchInputh enterButton />
+</Menu.Item>
+
+-------------------------------------------------------------------------------------------------------------------------
+
+useCallback : 함수 캐싱
+useMemo     : 값   캐싱
+
+
+const style = useMemo(() => ({ marginTop: 10 }), []);
+
+<ButtonWrapper style={style}>
+
+리렌더링 되어도 같은 객체 유지
+
+리렌더링시 이전 컴포넌트랑 비교해서 바뀐 부분만 리렌더링하여 성능 향상된다
