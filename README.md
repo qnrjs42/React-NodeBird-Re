@@ -103,6 +103,7 @@ Redux 사용
 front/store(폴더 생성)/configureStore.js(파일 생성)
 
 npm i next-redux-wrapper
+npm i react-redux
 npm i redux
 
 
