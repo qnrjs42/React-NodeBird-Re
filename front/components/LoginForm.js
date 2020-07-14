@@ -36,6 +36,7 @@ const LoginForm = () => {
       <div>
         <label htmlFor="user-password">비밀번호</label> <br />
         <Input
+          type="password"
           name="user-password"
           value={password}
           onChange={onChangePassword}
