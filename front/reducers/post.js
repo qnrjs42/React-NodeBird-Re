@@ -1,28 +1,39 @@
 export const initialState = {
-  mainPosts: [{
-      id: 1,
-      User: {
-          id: 1,
-          nickname: '제로초',
-      },
-      content: '첫 번째 게시글',
-      Images: [{
-          src: 'aaa',
-      }, {
-          src: 'bbb',
-      }, {
-          src: 'ccc'
-      }],
-      Comments: [{
-          User: {
-              nickname: 'nero',
-          },
-          content: '하이하이'
-      }]
-  }],
-  imagePaths: [],
-  postAdded: false,
-};
+         mainPosts: [
+           {
+             id: 1,
+             User: {
+               id: 1,
+               nickname: "제로초",
+             },
+             content: "첫 번째 게시글",
+             Images: [
+               {
+                 src:
+                   "https://images.unsplash.com/photo-1593642633279-1796119d5482?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80",
+               },
+               {
+                 src:
+                   "https://images.unsplash.com/photo-1594614271360-0ed9a570ae15?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80",
+               },
+               {
+                 src:
+                   "https://images.unsplash.com/photo-1594761047926-f0bdbadae552?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80",
+               },
+             ],
+             Comments: [
+               {
+                 User: {
+                   nickname: "nero",
+                 },
+                 content: "하이하이",
+               },
+             ],
+           },
+         ],
+         imagePaths: [],
+         postAdded: false,
+       };
 
 const ADD_POST = 'ADD_POST';
 
