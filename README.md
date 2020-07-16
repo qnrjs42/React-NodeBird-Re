@@ -104,10 +104,12 @@ front/store(폴더 생성)/configureStore.js(파일 생성)
 
 npm i redux-devtools-extension
 npm i next-redux-wrapper
-npm i redux-thunk
+npm i next-redux-saga
+npm i redux-saga
 npm i react-redux
 npm i redux
 
+redux-thunk(간단하게 사용가능하지만 기능이 적음)
 
 -------------------------------------------------------------------------------------------------------------------------
 
