@@ -22,7 +22,9 @@ function* addPost(action) {
     // const result = yield call(addPostAPI, action.data);
 
     yield put({
+      // 이 부분이 게시글 입력한 값이 올라간다, reducer의 mainPosts: [dummyPost(action.data), ...state.mainPosts],
       type: ADD_POST_SUCCESS,
+      data: action.data,
     });
   } catch (err) {
     yield put({
@@ -43,6 +45,7 @@ function* addComment(action) {
 
     yield put({
       type: ADD_COMMENT_SUCCESS,
+      data: action.data
     });
   } catch (err) {
     yield put({

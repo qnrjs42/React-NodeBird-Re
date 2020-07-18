@@ -1,3 +1,5 @@
+import shortId from 'shortid';
+
 export const initialState = {
          mainPosts: [
            {
@@ -35,6 +37,10 @@ export const initialState = {
          addPostLoading: false,
          addPostDone: false,
          addPostError: null,
+
+         addCommentLoading: false,
+         addCommentDone: false,
+         addCommentError: null,
        };
 
 export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
@@ -57,16 +63,26 @@ export const addComment = (data) => ({
 });
 
 
-const dummyPost = {
-    id: 2,
-    content: '더미데이터',
-    User: {
-        id: 1,
-        nickname: '제로초',
-    },
-    Images: [],
-    Comments: [],
-}
+const dummyPost = (data) => ({
+  // shortId : id가 겹치지 않게 랜덤으로 만들어준다
+  id: shortId.generate(),
+  content: data,
+  User: {
+    id: 1,
+    nickname: "제로초",
+  },
+  Images: [],
+  Comments: [],
+});
+
+const dummyComment = (data) => ({
+  id: shortId.generate(),
+  content: data,
+  User: {
+    id: 1,
+    nickname: "제로초",
+  },
+});
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -80,7 +96,7 @@ const reducer = (state = initialState, action) => {
     case ADD_POST_SUCCESS:
       return {
         ...state,
-        mainPosts: [dummyPost, ...state.mainPosts],
+        mainPosts: [dummyPost(action.data), ...state.mainPosts],
         addPostLoading: false,
         addPostDone: true,
       };
@@ -99,8 +115,16 @@ const reducer = (state = initialState, action) => {
         addCommentError: null,
       };
     case ADD_COMMENT_SUCCESS:
+      // 불변성을 지키기 위한 코드
+      const postIndex = state.mainPosts.findIndex((v) => v.id === action.data.postId);
+      const post = {...state.mainPosts[postIndex]};
+      post.Comments = [dummyComment(action.data.content), ...post.Comments];
+      const mainPosts = [...state.mainPosts];
+      mainPosts[postIndex] = post;
+
       return {
         ...state,
+        mainPosts,
         addCommentLoading: false,
         addCommentDone: true,
       };
