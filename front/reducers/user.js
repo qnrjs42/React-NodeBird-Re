@@ -1,32 +1,55 @@
 export const initialState = {
-  isLoggedIn: false,
-  isLoggingIn: false, // 로그인 시도 중    // Logging이면 로딩화면을 띄워주기위한 역할
-  isLoggingOut: false, // 로그아웃 시도 중
+  logInLoading: false, // 로그인 시도 중    // Logging이면 로딩화면을 띄워주기위한 역할
+  logInDone: false,
+  logInError: null,
+
+  logOutLoading: false, // 로그아웃 시도 중
+  logOutDone: false,
+  logOutError: null,
+
+  signUpLoading: false, // 회원가입 시도 중
+  signUpDone: false,
+  signUpError: null,
+
   me: null,
   signUpdata: {},
   loginData: {},
 };
 
-export const loginAction = (data) => {
-  return (dispatch, getState) => {
-    const state = getState();
-    dispatch(loginRequestAction());
+// type을 문자열로 정하면 오타에 취약 그래서 변수로 빼두는게 좋다
 
-    axios.get('/api/login')
-    .then((res) => {
-      // 로그인 성공
-      dispatch(loginSuccessAction(res.data));
-    })
-    .catch((err) => {
-      // 로그인 실패
-      dispatch(loginFailureAction(err))
-    })
-  }
-}
+export const LOG_IN_REQUEST = 'LOG_IN_REQUEST';
+export const LOG_IN_SUCCESS = 'LOG_IN_SUCCESS';
+export const LOG_IN_FAILURE = 'LOG_IN_FAILURE';
+
+export const LOG_OUT_REQUEST = "LOG_OUT_REQUEST";
+export const LOG_OUT_SUCCESS = "LOG_OUT_SUCCESS";
+export const LOG_OUT_FAILURE = "LOG_OUT_FAILURE";
+
+export const SIGN_UP_REQUEST = "SIGN_UP_REQUEST";
+export const SIGN_UP_SUCCESS = "SIGN_UP_SUCCESS";
+export const SIGN_UP_FAILURE = "SIGN_UP_FAILURE";
+
+export const FOLLOW_REQUEST = "FOLLOW_REQUEST";
+export const FOLLOW_SUCCESS = "FOLLOW_SUCCESS";
+export const FOLLOW_FAILURE = "FOLLOW_FAILURE";
+
+export const UNFOLLOW_REQUEST = "UNFOLLOW_REQUEST";
+export const UNFOLLOW_SUCCESS = "UNFOLLOW_SUCCESS";
+export const UNFOLLOW_FAILURE = "UNFOLLOW_FAILURE";
+
+const dummyUser = (data) => ({
+  ...action.data,
+  nickname: '제로초',
+  id: 1,
+  Post: [],
+  Followings: [],
+  Followers: [],
+})
 
 export const loginRequestAction = (data) => {
   return {
-    type: "LOG_IN_REQUEST",
+    type: LOG_IN_REQUEST,
     data,
   };
 };
@@ -37,19 +60,7 @@ export const loginRequestAction = (data) => {
 
 export const logoutRequestAction = () => {
   return {
-    type: "LOG_OUT_REQUEST",
-  };
-};
-
-export const logoutSuccessAction = () => {
-  return {
-    type: "LOG_OUT_SUCCESS",
-  };
-};
-
-export const logoutFailureAction = () => {
-  return {
-    type: "LOG_OUT_FAILURE",
+    type: LOG_OUT_REQUEST,
   };
 };
 
@@ -61,45 +72,76 @@ const reducer = (state = initialState, action) => {
     default:
       return state;
 
-    case "LOG_IN_REQUEST":
+    case LOG_IN_REQUEST:
+      // 로딩할 때는 에러 없애준다
       return {
         ...state,
-        isLoggingIn: true,
+        logInLoading: true,
+        logInError: null,
+        logInDone: false,
       };
 
-    case "LOG_IN_SUCCESS":
+    case LOG_IN_SUCCESS:
       return {
         ...state,
-        isLoggingIn: false,
-        isLoggedIn: true,
-        me: { ...action.data, nickname: 'zerocho' },
+        logInLoading: false,
+        logInDone: true,
+        // me: { ...action.data, nickname: "zerocho" }, // 더미 데이터
+        me: dummyUser(action.data), // 더미 데이터
       };
 
-    case "LOG_IN_FAILURE":
+    // ***** END LOG_IN *****
+
+    case LOG_IN_FAILURE:
       return {
         ...state,
-        isLoggingIn: false,
-        isLoggedIn: false,
+        logInLoading: false,
+        logInError: action.error,
       };
 
-    case "LOG_OUT_REQUEST":
+    case LOG_OUT_REQUEST:
       return {
         ...state,
-        isLoggingOut: true,
+        logOutLoading: true,
+        logOutDone: false,
+        logOutError: null,
       };
 
-    case "LOG_OUT_SUCCESS":
+    case LOG_OUT_SUCCESS:
       return {
         ...state,
-        isLoggingOut: false,
-        isLoggedIn: false,
+        logOutLoading: false,
+        logOutDone: true,
         me: null,
       };
 
-    case "LOG_OUT_FAILURE":
+    case LOG_OUT_FAILURE:
       return {
         ...state,
-        isLoggingOut: false,
+        logOutLoading: false,
+        logOutError: action.error,
+      };
+
+    case SIGN_UP_REQUEST:
+      return {
+        ...state,
+        signUpLoading: true,
+        signUpDone: false,
+        signUpError: null,
+      };
+
+    case SIGN_UP_SUCCESS:
+      return {
+        ...state,
+        signUpLoading: false,
+        signUpDone: true,
+      };
+
+    case SIGN_UP_FAILURE:
+      return {
+        ...state,
+        signUpLoading: false,
+        signUpError: action.error,
       };
   }
 };
