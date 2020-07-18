@@ -1,25 +1,35 @@
-import React, { useCallback, useState, useRef } from "react";
+import React, { useCallback, useRef, useEffect } from "react";
 import { Form, Input, Button } from 'antd';
 import { useSelector, useDispatch } from "react-redux";
 
 import { addPost } from '../reducers/post'
+import useInput from '../hooks/useInput'
 
 const PostForm = () => {
-    const { imagePaths } = useSelector((state) => state.post);
+    const { imagePaths, addPostDone } = useSelector((state) => state.post);
     const dispatch = useDispatch();
-    const imageInput = useRef();
+    
+    const [text, onChangeText, setText] = useInput('');
 
-    const [text, setText] = useState('');
-
-    const onChangeText = useCallback((e) => {
-        setText(e.target.value)
-    }, [])
+    useEffect(() => {
+        if(addPostDone) {
+            setText('');
+        }
+    }, [addPostDone])
 
     const onSubmit = useCallback(() => {
-        dispatch(addPost);
-        setText('');
-    }, [])
+        /*
+            dispatch(addPost(text));
+            setText('');
+            생각하면 게시글 업로드하고 새 게시글 생성하기 위해서는 게시글 입력칸을 비워줘야한다
+            위의 방법은 addPost가 에러를 리턴하고 setText('')로 text를 비워버려서 에러를 확인할 수 없게 된다
+            그래서 useEffect() 함수를 사용한다
+        */
+       dispatch(addPost(text));
 
+    }, [text])
+
+    const imageInput = useRef();
     const onClickImagUpload = useCallback(() => {
         imageInput.current.click();
     }, [imageInput.current])

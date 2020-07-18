@@ -23,8 +23,8 @@ import userSaga from './user'
 
   5. reducers/user.js const reducer = () => { case 'LOG_IN_SUCCESS'} 실행
 
-  6. components/AppLoayout.js에서 {isLoggedIn ? <UserProfile /> : <LoginForm />}
-  로그인에 성공하면 isLoggedIn이 true가 되어 <UserProfile /> 컴포넌트를 생성한다
+  6. components/AppLoayout.js에서 {me ? <UserProfile /> : <LoginForm />}
+  로그인에 성공하면 me가 true가 되어 <UserProfile /> 컴포넌트를 생성한다
 */
 
 export default function* rootSaga() {
