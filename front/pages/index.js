@@ -14,9 +14,11 @@ const Home = () => {
       <AppLayout>
         {me && <PostForm />}
 
-        {mainPosts.map((post, index) => (
-          <PostCard key={post.id} post={post} />
-        ))}
+        {mainPosts.map((c) => {
+          return (
+            <PostCard key={c.id} post={c} />
+          )
+        })}
       </AppLayout>
     );
 }

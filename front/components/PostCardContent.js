@@ -3,16 +3,38 @@ import Link from 'next/link';
 
 const PostCardContent = ({ postData }) => (
     <div>
+        {console.log('postData : ', typeof postData)}
         {/* 해시태그 정규표현식 */}
-        {postData.split(/(#[^\s#/]+)/g).map((v, i) => {
+        {postData.split(/(#[^\s#/]+)/g).map((v) => {
             /* 해시태그 추출 */
             if (v.match(/(#[^\s#/]+)/g)) {
-                return <Link href={`/hashtag/${v.slice(1)}`} key={i}><a>{v}</a></Link>
+                return <Link href={`/hashtag/${v.slice(1)}`} key={v}><a>{v}</a></Link>
             }
             return v;
         })}
     </div>
 )
+
+// const PostCardContent = ({ postData }) => (
+//   <div>
+//       {console.log('postData typeOf', typeof postData)}
+//     {
+//     postData.split(/(#[^\s#]+)/g).map((v) => {
+//       if (v.match(/(#[^\s#]+)/)) {
+//         return (
+//           <Link
+//             href={{ pathname: "/hashtag", query: { tag: v.slice(1) } }}
+//             as={`/hashtag/${v.slice(1)}`}
+//             key={v}
+//           >
+//             <a>{v}</a>
+//           </Link>
+//         );
+//       }
+//       return v;
+//     })}
+//   </div>
+// );
 
 PostCardContent.propTypes = { postData: PropTypes.string.isRequired };
 
