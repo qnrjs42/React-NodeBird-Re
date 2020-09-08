@@ -1,9 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import Link from "next/link";
 import { Menu, Input, Row, Col } from "antd";
 
+import UserProfile from "./UserProfile";
+import LoginForm from "./LoginForm";
+
 const AppLayout = ({ children }) => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   return (
     <>
       <div>
@@ -30,7 +35,7 @@ const AppLayout = ({ children }) => {
         {/* gutter란 Column 사이에 간격을 조금 넓혀주는것 */}
         <Row gutter={8}>
           <Col xs={24} md={6}>
-            왼쪽 메뉴
+            {isLoggedIn ? <UserProfile /> : <LoginForm />}
           </Col>
           <Col xs={24} md={12}>
             {children}
