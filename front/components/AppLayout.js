@@ -40,7 +40,13 @@ const AppLayout = ({ children }) => {
         {/* gutter란 Column 사이에 간격을 조금 넓혀주는것 */}
         <Row gutter={8}>
           <Col xs={24} md={6}>
-            {isLoggedIn ? <UserProfile /> : <LoginForm />}
+            {isLoggedIn ? (
+              // 로그인단계: LgoinForm에서 넘겨준 setIsLoggedIn이 true로 넘어오면 UserProfile 컴포넌트로 대체
+              // 로그아웃단계: UserProfile에서 넘겨준 setIsLoggedIn이 false로 넘어오면 LgoinForm 컴포넌트로 대체
+              <UserProfile setIsLoggedIn={setIsLoggedIn} />
+            ) : (
+              <LoginForm setIsLoggedIn={setIsLoggedIn} />
+            )}
           </Col>
           <Col xs={24} md={12}>
             {children}
