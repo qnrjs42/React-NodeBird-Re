@@ -36,9 +36,11 @@ _-------------------------------------------------------------------------------
 
 _-------------------------------------------------------------------------------------------------------------------------_
 
+```javascript
 <a href="https://www.naver.com" target="_blank" rel="noreferrer noopner">
   Made by Naver
 </a>
+```
 
 rel="noreferrer noopner" 는 보안 위협 제거 해준다
 
@@ -50,14 +52,17 @@ const onSubmitForm = useCallback(() => {
 
 }, []);
 
-<Form onFinish={onSubmitForm}>
-    ...
-</Form>
+```javascript
+<Form onFinish={onSubmitForm}>...</Form>
+```
 
 _-------------------------------------------------------------------------------------------------------------------------_
 
+```javascript
 <div style={{ marginTop: "10px" }}>
-이런식으로 코딩하면 리렌더링 될 때마다 페이지 return()함수가 실행되는데 
+```
+
+이런식으로 코딩하면 리렌더링 될 때마다 페이지 return()함수가 실행되는데
 {} === {} : false이기 때문에 이전 버전이랑 검사하면서 바뀐 부분만 리렌더링하는데 저 부분을 바뀐게 없어도 리렌더링해버린다
 
 그래서 쓰는데 styled-components
@@ -67,20 +72,41 @@ _-------------------------------------------------------------------------------
 useCallback: 함수 캐싱
 useMemo: 값 캐싱
 
+```javascript
 const onChangeId = useCallback((e) => {
-setId(e.target.value);
+  setId(e.target.value);
 }, []);
 
-const style = useMemo(() => ({
-marginTop: 10
-}), [])
+const style = useMemo(
+  () => ({
+    marginTop: 10,
+  }),
+  []
+);
+```
 
 _-------------------------------------------------------------------------------------------------------------------------_
 
-next와 redux
+### next와 redux
+
 next-redux-wrapper
 redux
 
+```javascript
 /_ React에서의 코드
 <Provider store={store}>
 _/ Next에서는 해당 코드 작성하지 않아도 됨
+```
+
+redux 코드 중에
+...state는 바뀌지 않는 데이터는 참조관계로 남고,
+바뀌는 데이터만 새롭게 만들어낸다 그러므로 메모리 성능에 효과적
+
+```javascript
+{
+    ...state,   // 바뀌지 않는 데이터는 재사용
+    name: action.data, // 바뀐 데이터는 새로 만듦
+}
+```
+
+배포 모드에서는 히스토리 모드가 필요없어서 메모리 정리는 계속 하기 때문에 메모리 문제가 일어나지 않는다
