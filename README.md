@@ -92,6 +92,7 @@ _-------------------------------------------------------------------------------
 next-redux-wrapper
 redux
 react-redux
+redux-devtools-extension
 
 ```javascript
 /_ React에서의 코드
