@@ -121,9 +121,57 @@ _-------------------------------------------------------------------------------
 // 다만 반복문이 있고 바뀔 가능성이 없을 때 key를 index로 사용해도 된다
 ```
 
+그리고 배열 안에 JSX(컴포넌트, <PostCard>처럼)안에 key를 줘야한다
+
 _-------------------------------------------------------------------------------------------------------------------------_
 
 ```javascript
 import { useRef } from 'react;
 useRef(); // 실제 DOM에 접근하기 위해 사용
 ```
+
+_-------------------------------------------------------------------------------------------------------------------------_
+
+PropTypes 객체 상세하게 정의해줄 때 PropTypes.shape() 사용
+
+```javascript
+PostCard.propTypes = {
+  post: PropTypes.shape({
+    id: PropTypes.number,
+    User: PropTypes.object,
+    content: PropTypes.string,
+    createAt: PropTypes.object,
+    Comments: PropTypes.arrayOf(PropTypes.object),
+    Images: PropTypes.arrayOf(PropTypes.object),
+  }).isRequired,
+};
+```
+
+_-------------------------------------------------------------------------------------------------------------------------_
+
+옵셔널 체이닝 (optional chaining)
+
+```javascript
+const id = me?.id;
+```
+
+풀어서 쓰면
+
+```javascript
+const id = me && me.id;
+```
+
+_-------------------------------------------------------------------------------------------------------------------------_
+
+True -> False
+False -> True 만드는 코드는 아래처럼 작성하자
+
+```javascript
+const [liked, setLiked] = useState(false);
+
+const onToggleLike = useCallback(() => {
+  setLiked((prev) => !prev);
+}, []);
+```
+
+prev는 liked의 이전 데이터가 담겨져 있다
