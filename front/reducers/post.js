@@ -9,16 +9,22 @@ export const initialState = {
       content: "첫 번째 게시글 #해시태그 #익스프레스",
       Images: [
         {
-          src: "",
+          src: "1",
         },
         {
-          src: "",
+          src: "2",
         },
         {
-          src: "",
+          src: "3",
         },
       ],
       Comments: [
+        {
+          User: {
+            nickname: "nero",
+          },
+          content: "우와 개정판이 나왔군요~",
+        },
         {
           User: {
             nickname: "hero",

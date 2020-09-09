@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Card, Popover, Button } from "antd";
+import { Card, Popover, Button, Comment, List } from "antd";
 import {
   RetweetOutlined,
   HeartOutlined,
@@ -11,6 +11,7 @@ import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
 import Avatar from "antd/lib/avatar/avatar";
 import PostImages from "./PostImages";
+import CommentForm from "./CommentForm";
 
 const PostCard = ({ post }) => {
   const id = useSelector((state) => state.user.me?.id);
@@ -68,7 +69,27 @@ const PostCard = ({ post }) => {
           description={post.content}
         />
       </Card>
-      {commentFormOpened && <div>댓글 부분</div>}
+      {commentFormOpened && (
+        <div>
+          {/* 댓글을 어떤 게시글에 달껀지 정확하게 구분하기 위해서 게시글의 id가 필요해서 CommentForm에 {post}를 넘겨준다 */}
+          <CommentForm post={post} />
+          <List
+            header={`${post.Comments.length}개의 댓글`}
+            itemLayout="horizontal"
+            dataSource={post.Comments}
+            // post.Comments 내부에 있는게 item
+            renderItem={(item) => (
+              <li>
+                <Comment
+                  author={item.User.nickname}
+                  avatar={<Avatar>{item.User.nickname[0]}</Avatar>}
+                  content={item.content}
+                />
+              </li>
+            )}
+          />
+        </div>
+      )}
       {/* <CommentForm />
       <Comments /> */}
     </div>

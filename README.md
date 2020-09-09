@@ -153,12 +153,16 @@ _-------------------------------------------------------------------------------
 
 ```javascript
 const id = me?.id;
+
+const id = useSelector((state) => state.user.me?.id);
 ```
 
 풀어서 쓰면
 
 ```javascript
 const id = me && me.id;
+
+const id = useSelector((state) => state.user.me && state.user.me.id);
 ```
 
 _-------------------------------------------------------------------------------------------------------------------------_
