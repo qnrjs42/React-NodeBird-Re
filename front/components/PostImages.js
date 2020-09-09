@@ -68,7 +68,7 @@ const PostImages = ({ images }) => {
           style={{
             display: "inline-block",
             width: "50%",
-            textAlgin: "center",
+            textAlign: "center",
             verticalAlign: "middle",
           }}
           onClick={onZoom}
