@@ -179,3 +179,29 @@ const onToggleLike = useCallback(() => {
 ```
 
 prev는 liked의 이전 데이터가 담겨져 있다
+
+_-------------------------------------------------------------------------------------------------------------------------_
+
+styled-components 태그안에 태그 접근할 때
+
+```javascript
+import styled from "styled-components";
+
+const ImgWrapper = styled.div`
+  padding: 32px;
+  text-align: center;
+
+  & img {
+    margin: 0 auto;
+    max-height: 750px;
+  }
+`;
+
+{
+  images.map((v) => (
+    <ImgWrapper key={v.src}>
+      <img src={v.src} alt={v.src} />
+    </ImgWrapper>
+  ));
+}
+```
