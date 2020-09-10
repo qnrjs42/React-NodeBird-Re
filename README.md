@@ -261,3 +261,60 @@ www.regexr.com
 
 .split(/(#[^\s#]+)/g)
 split인 경우 중간에 괄호를 포함시켜줘야 한다
+
+_-------------------------------------------------------------------------------------------------------------------------_
+
+next와 redux-saga
+
+redux-saga
+next-redux-saga
+
+제너레이터 함수는 중단점이 있는 함수
+
+```javascript
+const gen = function* () {
+  console.log(1);
+  yield; // 멈춤
+  console.log(2);
+  yield; // 멈춤
+  console.log(3);
+  yield; // 멈춤
+};
+const generator = gen();
+
+generator.next(); // 1 | done: false
+generator.next(); // 2 | done: false
+generator.next(); // 3 | done: false
+generator.next(); // done: true
+```
+
+금기 되어있는 무한루프 코드
+하지만 제너레이터 함수에서는 중단점이 있어서 유용
+
+```javascript
+const gen = function* () {
+    let i = 0;
+  while (true) {
+    yield i++;
+  }
+};
+
+const generator = gen();
+
+generator.next(); // value: 0, done: false
+generator.next(); // value: 1, done: false
+generator.next(); // value: 2, done: false
+generator.next(); // value: 3, done: false
+generator.next(); // value: 4, done: false
+...
+...
+
+```
+
+```javascript
+// pages/_app.js
+
+import withReduxSaga from "next-redux-saga";
+
+export default wrapper.withRedux(withReduxSaga(NodeBird));
+```
