@@ -1,4 +1,5 @@
 import shortId from "shortid";
+import { ADD_POST_TO_ME } from "./user";
 
 export const initialState = {
   mainPosts: [
@@ -11,24 +12,31 @@ export const initialState = {
       content: "첫 번째 게시글 #해시태그 #익스프레스",
       Images: [
         {
+          id: shortId.generate(),
           src: "https://source.unsplash.com/collection/190727",
         },
         {
+          id: shortId.generate(),
           src: "https://source.unsplash.com/collection/190727",
         },
         {
+          id: shortId.generate(),
           src: "https://source.unsplash.com/collection/190727",
         },
       ],
       Comments: [
         {
+          id: shortId.generate(),
           User: {
+            id: shortId.generate(),
             nickname: "nero",
           },
           content: "우와 개정판이 나왔군요~",
         },
         {
+          id: shortId.generate(),
           User: {
+            id: shortId.generate(),
             nickname: "hero",
           },
           content: "얼른 사고싶어요~",
@@ -40,6 +48,9 @@ export const initialState = {
   addPostLoading: false,
   addPostDone: false,
   addPostError: false,
+  removePostLoading: false,
+  removePostDone: false,
+  removePostError: false,
   addCommentLoading: false,
   addCommentDone: false,
   addCommentError: false,
@@ -48,6 +59,10 @@ export const initialState = {
 export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
 export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
 export const ADD_POST_FAILURE = "ADD_POST_FAILURE";
+
+export const REMOVE_POST_REQUEST = "REMOVE_POST_REQUEST";
+export const REMOVE_POST_SUCCESS = "REMOVE_POST_SUCCESS";
+export const REMOVE_POST_FAILURE = "REMOVE_POST_FAILURE";
 
 export const ADD_COMMENT_REQUEST = "ADD_COMMENT_REQUEST";
 export const ADD_COMMENT_SUCCESS = "ADD_COMMENT_SUCCESS";
@@ -64,8 +79,8 @@ export const addComment = (data) => ({
 });
 
 const dummyPost = (data) => ({
-  id: shortId.generate(),
-  content: data,
+  id: data.id,
+  content: data.content,
   User: {
     id: 1,
     nickname: "제로초",
@@ -93,6 +108,7 @@ const reducer = (state = initialState, action) => {
         addPostError: null,
       };
     case ADD_POST_SUCCESS:
+      console.log("ADD_POST_SUCCESS state: ", state);
       return {
         ...state,
         mainPosts: [dummyPost(action.data), ...state.mainPosts], // 게시글 쓰자마자 제일 위에 보이기 위해 dummyPost를 첫 번재 파라미터에 쓴다
@@ -100,6 +116,27 @@ const reducer = (state = initialState, action) => {
         addPostDone: true,
       };
     case ADD_POST_FAILURE:
+      return {
+        ...state,
+        addPostLoading: false,
+        addPostError: action.error,
+      };
+
+    case REMOVE_POST_REQUEST:
+      return {
+        ...state,
+        addPostLoading: true,
+        addPostDone: false,
+        addPostError: null,
+      };
+    case REMOVE_POST_SUCCESS:
+      return {
+        ...state,
+        mainPosts: state.mainPosts.filter((v) => v.id !== action.data),
+        addPostLoading: false,
+        addPostDone: true,
+      };
+    case REMOVE_POST_FAILURE:
       return {
         ...state,
         addPostLoading: false,
