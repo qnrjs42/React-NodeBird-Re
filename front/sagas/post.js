@@ -22,7 +22,7 @@ function* addPost(action) {
 
     yield put({
       type: ADD_POST_SUCCESS,
-      data: result.data,
+      data: action.data,
     });
   } catch (err) {
     yield put({
@@ -43,7 +43,7 @@ function* addComment(action) {
 
     yield put({
       type: ADD_COMMENT_SUCCESS,
-      data: result.data,
+      data: action.data,
     });
   } catch (err) {
     yield put({
