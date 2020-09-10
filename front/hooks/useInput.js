@@ -5,7 +5,7 @@ const hooks = (initialValue = null) => {
   const handler = useCallback((e) => {
     setValue(e.target.value);
   }, []);
-  return [value, handler];
+  return [value, handler, setValue];
 };
 
 export default hooks;

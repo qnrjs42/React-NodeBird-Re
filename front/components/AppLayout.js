@@ -13,7 +13,7 @@ const SearchInput = styled(Input.Search)`
 `;
 
 const AppLayout = ({ children }) => {
-  const { isLoggedIn } = useSelector((state) => state.user);
+  const { me } = useSelector((state) => state.user);
 
   return (
     <>
@@ -41,7 +41,7 @@ const AppLayout = ({ children }) => {
         {/* gutter란 Column 사이에 간격을 조금 넓혀주는것 */}
         <Row gutter={8}>
           <Col xs={24} md={6}>
-            {isLoggedIn ? <UserProfile /> : <LoginForm />}
+            {me ? <UserProfile /> : <LoginForm />}
           </Col>
           <Col xs={24} md={12}>
             {children}

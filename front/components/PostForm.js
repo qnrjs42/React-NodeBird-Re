@@ -1,18 +1,21 @@
-import React, { useCallback, useState, useRef } from "react";
+import React, { useCallback, useRef, useEffect } from "react";
 import { Form, Input, Button } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { addPost } from "../reducers/post";
+import useInput from "../hooks/useInput";
 
 const PostForm = () => {
-  const { imagePaths } = useSelector((state) => state.post);
+  const { imagePaths, addPostDone } = useSelector((state) => state.post);
   const dispatch = useDispatch();
 
-  const [text, setText] = useState("");
+  const [text, onChangeText, setText] = useInput("");
   const imageInput = useRef();
 
-  const onChangeText = useCallback((e) => {
-    setText(e.target.value);
-  }, []);
+  useEffect(() => {
+    if (addPostDone) {
+      setText("");
+    }
+  }, [addPostDone]);
 
   // 버튼을 눌러서 사진 업로드 창을 띄울 수 있다
   const onClickImageUpload = useCallback(() => {
@@ -20,9 +23,8 @@ const PostForm = () => {
   }, [imageInput.current]);
 
   const onSubmit = useCallback(() => {
-    dispatch(addPost);
-    setText("");
-  }, []);
+    dispatch(addPost(text));
+  }, [text]);
 
   return (
     <Form
