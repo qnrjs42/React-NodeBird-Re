@@ -365,7 +365,7 @@ call() : 파라미터의 함수를 실행 (동기 함수 호출) 결과를 기�
 
 function\* logIn() {}
 yield take('LOG_IN', logIn);
-take() : 'LOG_IN'이라는 액션이 실행될 때까지 기다림
+take() : 'LOG_IN'이라는 액션이 실행될 때까지 기다림, 하지만 한 번만 실행하면 끝나버림
 액션이 실행되면 logIn이라는 제너레이터 함수 실행
 
 function loginAPI(data) {}
@@ -374,6 +374,14 @@ call(loginAPI, action.data) : 이부분만 제너레이터 함수가 아닌 일�
 두 번째 파라미터부터는 함수의 매개변수로 전달
 
 put(): dispatch라고 보면 된다
+
+take('LOG_IN_REQUEST', logIn): 일회성 동작
+takeEvery('LOG_IN_REQUEST', logIn): 비동기 동작
+takeLeading('LOG_IN_REQUEST', logIn): 클릭 실수로 두 번했을 때 처음 클릭만 동작
+takeLatest('LOG_IN_REQUEST', logIn): 클릭 실수로 두 번했을 때 마지막 클릭만 동작
+throttle('LOG_IN_REQUEST', logIn, 2000): 2초 동안은 한 번만 동작
+
+delay(1000) : 1초 동안 대기, 비동기
 
 # 동작 순서
 
@@ -457,3 +465,5 @@ yield put({
     data: err.response.data,
 });
 ```
+
+_-------------------------------------------------------------------------------------------------------------------------_
