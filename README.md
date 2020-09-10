@@ -538,7 +538,39 @@ _-------------------------------------------------------------------------------
 shortid : 겹치기 힘든 ID 생성
 faker : 가짜 데이터들 생성
 
-id: shortId.generate()
+```javascript
+import shortId from "shortid";
+import faker from "faker";
+
+id: shortId.generate();
+
+initialState.mainPosts = initialState.mainPosts.concat(
+  Array(20)
+    .fill()
+    .map(() => ({
+      id: shortId.generate(),
+      User: {
+        id: shortId.generate(),
+        nickname: faker.name.findName(),
+      },
+      content: faker.lorem.paragraph(),
+      Images: [
+        {
+          src: faker.image.image(),
+        },
+      ],
+      Comments: [
+        {
+          User: {
+            id: shortId.generate(),
+            nickname: faker.name.findName(),
+          },
+          content: faker.lorem.sentence(),
+        },
+      ],
+    }))
+);
+```
 
 _-------------------------------------------------------------------------------------------------------------------------_
 
