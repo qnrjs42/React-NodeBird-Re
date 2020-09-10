@@ -539,3 +539,29 @@ shortid : 겹치기 힘든 ID 생성
 faker : 가짜 데이터들 생성
 
 id: shortId.generate()
+
+_-------------------------------------------------------------------------------------------------------------------------_
+
+reudx 불변성 편하기 지키기
+
+immer
+
+```javascript
+// reducers/user.js
+
+import produce from 'immer';
+
+const reducer = (state = initialState, action) => {
+  return produce(state, (draft) => {
+    switch (action.type) {
+      case LOG_IN_REQUEST:
+        draft.logInLoading = true;
+        draft.logInError = null;
+        draft.logInDone = false;
+        break;
+
+        ...
+    }
+  });
+};
+```
