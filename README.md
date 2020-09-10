@@ -318,3 +318,142 @@ import withReduxSaga from "next-redux-saga";
 
 export default wrapper.withRedux(withReduxSaga(NodeBird));
 ```
+
+```javascript
+import { all, fork, call, take, put } from "redux-saga/effects";
+import axios from "axios";
+
+function logInAPI(data) {
+  return axios.post("/api/login", data);
+}
+
+function* logIn(action) {
+  try {
+    const result = yield call(logInAPI, action.data);
+    // 성공 결과: result.data
+    // 실패 결과: err.response.data
+
+    yield put({
+      type: "LOG_IN_SUCCESS",
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: "LOG_IN_FAILURE",
+      data: err.response.data,
+    });
+  }
+}
+
+function* watchLogIn() {
+  yield take("LOG_IN_REQUEST", logIn);
+}
+
+export default function* rootSaga() {
+  yield all([fork(watchLogIn)]);
+}
+```
+
+all([fork(watchLogin), fork(watchLogOut)])
+all([]) : 배열에 들어있는 코드를 동시에 실행
+
+fork(watchLogin)
+fork() : 파라미터의 함수를 실행 (비동기 함수 호출) 결과 상관없이 다음 코드 실행
+
+call(watchLogin)
+call() : 파라미터의 함수를 실행 (동기 함수 호출) 결과를 기다린 후 다음 코드 실행
+
+function\* logIn() {}
+yield take('LOG_IN', logIn);
+take() : 'LOG_IN'이라는 액션이 실행될 때까지 기다림
+액션이 실행되면 logIn이라는 제너레이터 함수 실행
+
+function loginAPI(data) {}
+call(loginAPI, action.data) : 이부분만 제너레이터 함수가 아닌 일반 함수 사용
+첫 번째 파라미터는 함수
+두 번째 파라미터부터는 함수의 매개변수로 전달
+
+put(): dispatch라고 보면 된다
+
+# 동작 순서
+
+## 1. 코드 동시 실행
+
+```javascript
+yield all([fork(watchLogIn)]);
+```
+
+-> all([]) 배열에 있는 코드 동시 실행
+
+## 2. REQUEST 액션 감지
+
+```javascript
+function\* watchLogIn() {
+    yield take("LOG_IN_REQUEST", logIn);
+}
+```
+
+-> "LOG_IN_REQUEST"이라는 액션이 실행될 때까지 기다림,
+액션이 실행되면 logIn 제너레이터 함수 실행
+
+## 3. logIn 제너레이터 함수 실행
+
+```javascript
+function\* logIn(action) {
+    try {
+        const result = yield call(logInAPI, action.data);
+        // 성공 결과: result.data
+        // 실패 결과: err.response.data
+        yield put({
+            type: "LOG_IN_SUCCESS",
+            data: result.data,
+        });
+    } catch (err) {
+        yield put({
+            type: "LOG_IN_FAILURE",
+            data: err.response.data,
+        });
+    }
+}
+```
+
+-> action 매개변수는 "LOG_IN_REQUEST"이라는 액션이 실행될 때 같이 보내온 data
+
+## 4. call() 동기적 함수, 서버에 결과 값 받을 때까지 대기
+
+```javascript
+const result = yield call(logInAPI, action.data);
+```
+
+-> logInAPI이라는 함수를 실행하나 결과 값을 받을 때까지 기다림
+
+## 5. 서버에 로그인 data 전송
+
+```javascript
+function logInAPI(data) {
+  return axios.post("/api/login", data);
+}
+```
+
+## 6. 서버에서 데이터를 가져온 결과
+
+    성공 결과: result.data
+    실패 결과: err.response.data
+
+## 7. 성공 했을 때
+
+```javascript
+yield put({
+    type: "LOG_IN_SUCCESS",
+    data: result.data,
+ });
+```
+
+## 8. 실패 했을 때
+
+```javascript
+yield put({
+    type: "LOG_IN_FAILURE",
+    data: err.response.data,
+});
+```
