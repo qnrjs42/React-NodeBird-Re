@@ -19,7 +19,7 @@ import {
 } from "../reducers/user";
 
 function logInAPI(data) {
-  return axios.post("/api/login", data);
+  return axios.post("/login", data);
 }
 
 function* logIn(action) {
@@ -42,7 +42,7 @@ function* logIn(action) {
 }
 
 function logOutAPI() {
-  return axios.post("/api/logout");
+  return axios.post("/logout");
 }
 
 function* logOut() {
@@ -64,20 +64,22 @@ function* logOut() {
   }
 }
 
-function signUpAPI() {
-  return axios.post("/api/signUp");
+function signUpAPI(data) {
+  return axios.post("http://localhost:3065/user", data);
 }
 
-function* signUp() {
+function* signUp(action) {
   try {
-    // const result = yield call(signUpAPI);
+    const result = yield call(signUpAPI, action.data);
+    console.log(result);
     // 성공 결과: result.data
     // 실패 결과: err.response.data
 
-    yield delay(1000);
+    // yield delay(1000);
 
     yield put({
       type: SIGN_UP_SUCCESS,
+      data: result.data,
     });
   } catch (err) {
     yield put({
@@ -88,7 +90,7 @@ function* signUp() {
 }
 
 function followAPI() {
-  return axios.post("/api/follow");
+  return axios.post("/follow");
 }
 
 function* follow(action) {
@@ -112,7 +114,7 @@ function* follow(action) {
 }
 
 function unFollowAPI() {
-  return axios.post("/api/unFollow");
+  return axios.post("/unFollow");
 }
 
 function* unFollow(action) {
