@@ -19,19 +19,19 @@ import {
 } from "../reducers/user";
 
 function logInAPI(data) {
-  return axios.post("/login", data);
+  return axios.post("/user/login", data);
 }
 
 function* logIn(action) {
   try {
-    // const result = yield call(logInAPI, action.data);
+    const result = yield call(logInAPI, action.data);
     // 성공 결과: result.data
     // 실패 결과: err.response.data
-    yield delay(1000);
+    // yield delay(1000);
 
     yield put({
       type: LOG_IN_SUCCESS,
-      data: action.data,
+      data: result.data,
     });
   } catch (err) {
     yield put({
@@ -42,7 +42,7 @@ function* logIn(action) {
 }
 
 function logOutAPI() {
-  return axios.post("/logout");
+  return axios.post("/user/logout");
 }
 
 function* logOut() {
@@ -65,7 +65,7 @@ function* logOut() {
 }
 
 function signUpAPI(data) {
-  return axios.post("http://localhost:3065/user", data);
+  return axios.post("/user", data);
 }
 
 function* signUp(action) {

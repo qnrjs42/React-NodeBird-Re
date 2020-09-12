@@ -1,9 +1,10 @@
 const express = require("express");
 const cors = require("cors");
-const db = require("./models");
 
+const db = require("./models");
 const postRouter = require("./routes/post");
 const userRouter = require("./routes/user");
+const passportConfig = require("./passport");
 
 const app = express();
 db.sequelize
@@ -14,6 +15,7 @@ db.sequelize
   .catch(console.error);
 
 // app.use("/post", postRouter); <- 라우터들 보다 코드 먼저 작성
+passportConfig();
 app.use(
   cors({
     origin: true,
