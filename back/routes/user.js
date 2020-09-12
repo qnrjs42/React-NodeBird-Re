@@ -21,6 +21,7 @@ router.post("/login", (req, res, next) => {
       return res.status(401).send(info.reason);
     }
 
+    // passport/index - serializeUser로 'user' 넘겨줌
     return req.login(user, async (loginErr) => {
       // 로그인하다가 에러나면
       if (loginErr) {
@@ -58,6 +59,12 @@ router.post("/", async (req, res, next) => {
     console.error(err);
     next(err); // next()는 status 500 에러가 발생하면 서버가 브라우저에게 이런 에러가 발생했다고 알림
   }
+});
+
+router.post("/user/logout", (req, res, next) => {
+  req.logOut();
+  req.session.destroy();
+  res.send("로그아웃 성공");
 });
 
 module.exports = router;

@@ -24,6 +24,7 @@ module.exports = () => {
               reason: "존재하지 않는 이메일입니다. ",
             });
           }
+          // 입력한 패스워드랑 DB에 있는 패스워드랑 비교
           const result = await bcrypt.compare(password, user.password);
 
           // 유저가 있으면
