@@ -80,3 +80,44 @@ module.exports = router;
 ```
 
 _-------------------------------------------------------------------------------------------------------------------------_
+
+## node와 mysql
+
+mysql2
+sequelize
+sequelize-cli
+
+npx sequelize init
+
+config/config.json
+
+```json
+{
+  "development": {
+    // 개발용 DB
+    "username": "root",
+    "password": "1234",
+    "database": "react-nodebird-re",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "test": {
+    // 테스트용 DB
+    "username": "root",
+    "password": null,
+    "database": "react-nodebird-re",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    // 배포용 DB
+    "username": "root",
+    "password": null,
+    "database": "react-nodebird-re",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}
+```
+
+_-------------------------------------------------------------------------------------------------------------------------_
