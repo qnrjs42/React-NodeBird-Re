@@ -15,7 +15,7 @@
 
 _-------------------------------------------------------------------------------------------------------------------------_
 
-자주쓰는 express 명령어
+## 자주쓰는 express 명령어
 
 const express = require('express');
 const app = express();
@@ -27,3 +27,56 @@ app.delete -> 제거
 app.patch -> 부분 수정
 app.options -> 찔러보기(서버에게 요청 보낼 수 있는지 확인, 요청 보내면 서버가 받을 수 있는지)
 app.head -> 헤더만 가져오기
+
+_-------------------------------------------------------------------------------------------------------------------------_
+
+## Node에서는 import대신 require를 사용
+
+프론트에서는 webpack 사용하기 때문에 import -> require가 된다
+백엔드에서는 webpack을 사용하지 않기 때문에 그냥 require를 사용
+
+_-------------------------------------------------------------------------------------------------------------------------_
+
+## 라우터 분리 방법
+
+```javascript
+// /back/app.js
+
+const express = require("express");
+const postRouter = require("./routes/post");
+const app = express();
+
+// /post : 프리픽스로 중복되는 것을 빼냄
+app.use("/post", postRouter);
+
+app.listen(3065, () => {
+  console.log("서버 실행 중");
+});
+```
+
+```javascript
+// /back/routes/post.js
+
+const express = require("express");
+
+const router = express.Router();
+
+// POST /post
+router.post("/", (req, res) => {
+  res.json({
+    id: 1,
+    content: "hello",
+  });
+});
+
+// DELETE /post
+router.delete("/", (req, res) => {
+  res.json({
+    id: 1,
+  });
+});
+
+module.exports = router;
+```
+
+_-------------------------------------------------------------------------------------------------------------------------_

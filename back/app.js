@@ -1,16 +1,18 @@
 const express = require("express");
 
+const postRouter = require("./routes/post");
+
 const app = express();
 
 app.get("/", (req, res) => {
   res.send("hello express");
 });
 
-app.get("/api", (req, res) => {
+app.get("/", (req, res) => {
   res.send("hello api");
 });
 
-app.get("/api/posts", (req, res) => {
+app.get("/posts", (req, res) => {
   res.json([
     {
       id: 1,
@@ -27,18 +29,8 @@ app.get("/api/posts", (req, res) => {
   ]);
 });
 
-app.post("/api/post", (req, res) => {
-  res.json({
-    id: 1,
-    content: "hello",
-  });
-});
-
-app.delete("/api/post", (req, res) => {
-  res.json({
-    id: 1,
-  });
-});
+// /post : 프리픽스로 중복되는 것을 빼냄
+app.use("/post", postRouter);
 
 app.listen(3065, () => {
   console.log("서버 실행 중");
