@@ -8,7 +8,7 @@ const router = express.Router();
 router.post("/", async (req, res, next) => {
   try {
     // DB에 이메일 중복 검사
-    await User.findOne({
+    const exUser = await User.findOne({
       where: {
         email: req.body.email,
       },
@@ -23,6 +23,7 @@ router.post("/", async (req, res, next) => {
       nickname: req.body.nickname,
       password: hashedPassword,
     });
+
     return res.status(201).send("ok");
   } catch (err) {
     console.error(err);

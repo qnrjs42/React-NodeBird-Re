@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const db = require("./models");
 
 const postRouter = require("./routes/post");
@@ -13,6 +14,12 @@ db.sequelize
   .catch(console.error);
 
 // app.use("/post", postRouter); <- 라우터들 보다 코드 먼저 작성
+app.use(
+  cors({
+    origin: true,
+    credentials: false,
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
