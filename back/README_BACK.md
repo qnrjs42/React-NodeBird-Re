@@ -121,3 +121,30 @@ config/config.json
 ```
 
 _-------------------------------------------------------------------------------------------------------------------------_
+
+## DB 관계
+
+db.User.hasMany(db.Post); // 유저가 여러 개 게시글을 가짐 (1:다 관계)
+db.Post.belongsTo(db.User); // 게시글은 유저에게 속해있음
+
+db.Post.belongsToMany(db.Hashtag); // 게시글은 여러 개 해시태그에 속해 있음 (다:다 관계)
+db.Hashtag.belongsToMany(db.Post); // 해시태그는 여러 개 게시글에 속해 있음 (다:다 관계)
+
+1번 게시글: #노드 #리액트
+2번 게시글: #노드 #익스프레스
+3번 게시글: #뷰 #노드 #리액트
+
+1번 해시: 노드
+2번 해시: 리액트
+3번 해시: 익스프레스
+4번 해시: 뷰
+
+다:다 관계일 때 중간 테이블이 생긴다
+
+PostId: 1 - HashtagId: 1
+PostId: 1 - HashtagId: 2
+PostId: 2 - HashtagId: 1
+PostId: 2 - HashtagId: 3
+PostId: 3 - HashtagId: 4
+PostId: 3 - HashtagId: 1
+PostId: 3 - HashtagId: 2

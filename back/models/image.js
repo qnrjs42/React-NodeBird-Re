@@ -12,7 +12,9 @@ module.exports = (sequelize, DataTypes) => {
       collate: "utf8_general_ci",
     }
   );
-  Image.associate = (db) => {};
+  Image.associate = (db) => {
+    db.Image.belongsTo(db.Post); // 이미지는 게시글에 속해 있음
+  };
 
   return Image;
 };

@@ -12,7 +12,9 @@ module.exports = (sequelize, DataTypes) => {
       collate: "utf8mb4_general_ci", // 이모티콘 저장
     }
   );
-  Hashtag.associate = (db) => {};
+  Hashtag.associate = (db) => {
+    db.Hashtag.belongsToMany(db.Post); // 해시태그는 여러 개 게시글에 속해 있음 (다:다 관계)
+  };
 
   return Hashtag;
 };
