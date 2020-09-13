@@ -47,7 +47,7 @@ function logOutAPI() {
 
 function* logOut() {
   try {
-    yield call(logOutAPI);
+    const result = yield call(logOutAPI);
     // 성공 결과: result.data
     // 실패 결과: err.response.data
 

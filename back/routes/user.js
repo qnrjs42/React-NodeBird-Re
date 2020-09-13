@@ -1,6 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const { User, Post } = require("../models");
+const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
 const passport = require("passport");
 
 const router = express.Router();
@@ -9,7 +10,8 @@ const router = express.Router();
 // err: 서버 에러
 // user: 성공
 // info: 클라이언트 에러
-router.post("/login", (req, res, next) => {
+router.post("/login", isNotLoggedIn, (req, res, next) => {
+  // middleware에서 next()한 미들웨어는 다음 코드를 실행
   // passport/local에서 받아옴
   // 미들웨어 확장
   passport.authenticate("local", (err, user, info) => {
@@ -59,7 +61,7 @@ router.post("/login", (req, res, next) => {
 });
 
 // POST /user
-router.post("/", async (req, res, next) => {
+router.post("/", isNotLoggedIn, async (req, res, next) => {
   try {
     // DB에 이메일 중복 검사
     const exUser = await User.findOne({
@@ -85,7 +87,7 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.post("/user/logout", (req, res, next) => {
+router.post("/logout", isLoggedIn, (req, res, next) => {
   req.logOut();
   req.session.destroy();
   res.send("로그아웃 성공");
