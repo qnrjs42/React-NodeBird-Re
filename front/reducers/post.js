@@ -167,7 +167,8 @@ const reducer = (state = initialState, action) => {
       case ADD_POST_SUCCESS:
         draft.addPostLoading = false;
         draft.addPostDone = true;
-        draft.mainPosts.unshift(dummyPost(action.data)); // 게시글 쓰자마자 제일 위에 보이기 위해 dummyPost를 첫 번재 파라미터에 쓴다
+        // draft.mainPosts.unshift(dummyPost(action.data)); // 게시글 쓰자마자 제일 위에 보이기 위해 dummyPost를 첫 번재 파라미터에 쓴다
+        draft.mainPosts.unshift(action.data); // 실제 데이터
         break;
       case ADD_POST_FAILURE:
         draft.addPostLoading = false;
@@ -195,8 +196,9 @@ const reducer = (state = initialState, action) => {
         draft.addCommentError = null;
         break;
       case ADD_COMMENT_SUCCESS: {
-        const post = draft.mainPosts.find((v) => v.id === action.data.postId); // 게시글 리스트 중에 내가 원하는 post 찾아서
-        post.Comments.unshift(dummyComment(action.data.content)); // 그 post에다가 맨 앞에다가 더미코멘트 넣어준다
+        const post = draft.mainPosts.find((v) => v.id === action.data.PostId); // 게시글 리스트 중에 내가 원하는 post 찾아서
+        // post.Comments.unshift(dummyComment(action.data.content)); // 그 post에다가 맨 앞에다가 더미코멘트 넣어준다
+        post.Comments.unshift(action.data.content); // 실제 데이터
         draft.addCommentLoading = false;
         draft.addCommentDone = true;
         break;
