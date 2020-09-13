@@ -23,8 +23,8 @@ db.sequelize
 passportConfig();
 app.use(
   cors({
-    origin: true,
-    credentials: false,
+    origin: true, // cors 에러 해결
+    credentials: true, // cors 쿠키도 같이 전송
   })
 );
 app.use(express.json());
