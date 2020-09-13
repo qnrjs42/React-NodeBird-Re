@@ -20,25 +20,23 @@ import {
   LOAD_POSTS_REQUEST,
   LOAD_POSTS_SUCCESS,
   LOAD_POSTS_FAILURE,
-  generateDummyPost,
 } from "../reducers/post";
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
-import shortId from "shortid";
 
 function loadPostsAPI(data) {
-  return axios.get("/api/posts", data);
+  return axios.get("/posts", data);
 }
 
-function* loadPosts() {
+function* loadPosts(action) {
   try {
-    // const result = yield call(loadPostsAPI, action.data);
+    const result = yield call(loadPostsAPI, action.data);
     // 성공 결과: result.data
     // 실패 결과: err.response.data
-    yield delay(1000);
+    // yield delay(1000);
 
     yield put({
       type: LOAD_POSTS_SUCCESS,
-      data: generateDummyPost(10),
+      data: result.data,
     });
   } catch (err) {
     yield put({

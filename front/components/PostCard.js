@@ -24,6 +24,10 @@ const PostCard = ({ post }) => {
   const [liked, setLiked] = useState(false);
   const [commentFormOpened, setCommentFormOpened] = useState(false);
 
+  // useEffect(() => {
+
+  // }, [])
+
   const onToggleLike = useCallback(() => {
     setLiked((prev) => !prev);
   }, []);
@@ -99,6 +103,7 @@ const PostCard = ({ post }) => {
             // post.Comments 내부에 있는게 item
             renderItem={(item) => (
               <li>
+                <o>{console.log("item", item)}</o>
                 <Comment
                   author={item.User.nickname}
                   avatar={<Avatar>{item.User.nickname[0]}</Avatar>}
@@ -120,7 +125,7 @@ PostCard.propTypes = {
     id: PropTypes.number,
     User: PropTypes.object,
     content: PropTypes.string,
-    createAt: PropTypes.object,
+    createAt: PropTypes.string,
     Comments: PropTypes.arrayOf(PropTypes.object),
     Images: PropTypes.arrayOf(PropTypes.object),
   }).isRequired,

@@ -18,9 +18,6 @@ const Home = () => {
     dispatch({
       type: LOAD_MY_INFO_REQUEST,
     });
-  }, []);
-
-  useEffect(() => {
     dispatch({
       type: LOAD_POSTS_REQUEST,
     });

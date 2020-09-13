@@ -2,10 +2,12 @@ const express = require("express");
 const cors = require("cors");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
+const morgan = require("morgan");
 const dotenv = require("dotenv");
 
 const db = require("./models");
 const postRouter = require("./routes/post");
+const postsRouter = require("./routes/posts");
 const userRouter = require("./routes/user");
 const passportConfig = require("./passport");
 const passport = require("passport");
@@ -21,6 +23,7 @@ db.sequelize
 
 // app.use("/post", postRouter); <- 라우터들 보다 코드 먼저 작성
 passportConfig();
+app.use(morgan("dev"));
 app.use(
   cors({
     origin: true, // cors 에러 해결
@@ -40,33 +43,9 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get("/", (req, res) => {
-  res.send("hello express");
-});
-
-app.get("/", (req, res) => {
-  res.send("hello api");
-});
-
-app.get("/posts", (req, res) => {
-  res.json([
-    {
-      id: 1,
-      content: "hello",
-    },
-    {
-      id: 2,
-      content: "hello2",
-    },
-    {
-      id: 3,
-      content: "hello3",
-    },
-  ]);
-});
-
 // /post : 프리픽스로 중복되는 것을 빼냄
-app.use("/post", postRouter);
+app.use("/posts", postsRouter); // 여러개 단위 (게시글 불러오기)
+app.use("/post", postRouter); // 1개 단위, (게시글 생성, 삭제, 댓글 생성, 삭제)
 app.use("/user", userRouter);
 
 // 에러 처리 미들웨어

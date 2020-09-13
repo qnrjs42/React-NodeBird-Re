@@ -1,51 +1,9 @@
 import shortId from "shortid";
 import faker from "faker";
 import produce from "immer";
-import shortid from "shortid";
 
 export const initialState = {
-  mainPosts: [
-    {
-      id: 1,
-      User: {
-        id: 1,
-        nickname: "제로초",
-      },
-      content: "첫 번째 게시글 #해시태그 #익스프레스",
-      Images: [
-        {
-          id: shortId.generate(),
-          src: "https://source.unsplash.com/collection/190727",
-        },
-        {
-          id: shortId.generate(),
-          src: "https://source.unsplash.com/collection/190727",
-        },
-        {
-          id: shortId.generate(),
-          src: "https://source.unsplash.com/collection/190727",
-        },
-      ],
-      Comments: [
-        {
-          id: shortId.generate(),
-          User: {
-            id: shortId.generate(),
-            nickname: "nero",
-          },
-          content: "우와 개정판이 나왔군요~",
-        },
-        {
-          id: shortId.generate(),
-          User: {
-            id: shortId.generate(),
-            nickname: "hero",
-          },
-          content: "얼른 사고싶어요~",
-        },
-      ],
-    },
-  ],
+  mainPosts: [],
   imagePaths: [],
   hasMorePosts: true,
 
@@ -66,31 +24,31 @@ export const initialState = {
   addCommentError: false,
 };
 
-export const generateDummyPost = (number) =>
-  Array(number)
-    .fill()
-    .map(() => ({
-      id: shortId.generate(),
-      User: {
-        id: shortId.generate(),
-        nickname: faker.name.findName(),
-      },
-      content: faker.lorem.paragraph(),
-      Images: [
-        {
-          src: faker.image.image(),
-        },
-      ],
-      Comments: [
-        {
-          User: {
-            id: shortId.generate(),
-            nickname: faker.name.findName(),
-          },
-          content: faker.lorem.sentence(),
-        },
-      ],
-    }));
+// export const generateDummyPost = (number) =>
+//   Array(number)
+//     .fill()
+//     .map(() => ({
+//       id: shortId.generate(),
+//       User: {
+//         id: shortId.generate(),
+//         nickname: faker.name.findName(),
+//       },
+//       content: faker.lorem.paragraph(),
+//       Images: [
+//         {
+//           src: faker.image.image(),
+//         },
+//       ],
+//       Comments: [
+//         {
+//           User: {
+//             id: shortId.generate(),
+//             nickname: faker.name.findName(),
+//           },
+//           content: faker.lorem.sentence(),
+//         },
+//       ],
+//     }));
 
 // initialState.mainPosts = initialState.mainPosts.concat(generateDummyPost(10));
 
@@ -120,25 +78,25 @@ export const addComment = (data) => ({
   data,
 });
 
-const dummyPost = (data) => ({
-  id: data.id,
-  content: data.content,
-  User: {
-    id: 1,
-    nickname: "제로초",
-  },
-  Images: [],
-  Comments: [],
-});
+// const dummyPost = (data) => ({
+//   id: data.id,
+//   content: data.content,
+//   User: {
+//     id: 1,
+//     nickname: "제로초",
+//   },
+//   Images: [],
+//   Comments: [],
+// });
 
-const dummyComment = (data) => ({
-  id: shortId.generate(),
-  content: data,
-  User: {
-    id: 1,
-    nickname: "제로초",
-  },
-});
+// const dummyComment = (data) => ({
+//   id: shortId.generate(),
+//   content: data,
+//   User: {
+//     id: 1,
+//     nickname: "제로초",
+//   },
+// });
 
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
@@ -198,7 +156,7 @@ const reducer = (state = initialState, action) => {
       case ADD_COMMENT_SUCCESS: {
         const post = draft.mainPosts.find((v) => v.id === action.data.PostId); // 게시글 리스트 중에 내가 원하는 post 찾아서
         // post.Comments.unshift(dummyComment(action.data.content)); // 그 post에다가 맨 앞에다가 더미코멘트 넣어준다
-        post.Comments.unshift(action.data.content); // 실제 데이터
+        post.Comments.unshift(action.data); // 실제 데이터
         draft.addCommentLoading = false;
         draft.addCommentDone = true;
         break;

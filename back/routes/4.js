@@ -1,8 +1,9 @@
 import { Form, Input, Button } from "antd";
-import { useCallback, useState, useEffect } from "react";
-import useInput from "../hooks/useInput";
+import React, { useCallback, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useSelector, useDispatch } from "react-redux";
+
+import useInput from "../hooks/useInput";
 import { ADD_COMMENT_REQUEST } from "../reducers/post";
 
 const CommentForm = ({ post }) => {
@@ -25,6 +26,7 @@ const CommentForm = ({ post }) => {
       data: { content: commentText, postId: post.id, userId: id },
     });
   }, [commentText, id]);
+
   return (
     <Form onFinish={onSubmitComment}>
       <Form.Item style={{ position: "relative", margin: 0 }}>
@@ -34,9 +36,9 @@ const CommentForm = ({ post }) => {
           rows={4}
         />
         <Button
+          style={{ position: "absolute", right: 0, bottom: -40, zIndex: 1 }}
           type="primary"
           htmlType="submit"
-          style={{ position: "absolute", right: 0, bottom: -40, zIndex: 1 }}
           loading={addCommentLoading}
         >
           삐약

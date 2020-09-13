@@ -2,12 +2,12 @@ const express = require("express");
 
 const { isLoggedIn } = require("./middlewares");
 
-const { Post, Image, Comment } = require("../models");
+const { Post, Image, Comment, User } = require("../models");
 
 const router = express.Router();
 
 // POST /post
-router.post("/", isLoggedIn, async (req, res) => {
+router.post("/", isLoggedIn, async (req, res, next) => {
   try {
     const post = await Post.create({
       content: req.body.content,
@@ -21,9 +21,16 @@ router.post("/", isLoggedIn, async (req, res) => {
         },
         {
           model: Comment, // 게시글에 달린 댓글
+          include: [
+            {
+              model: User, // 댓글의 작성자
+              attributes: ["id", "nickname"],
+            },
+          ],
         },
         {
           model: User, // 게시글 작성자
+          attributes: ["id", "nickname"],
         },
       ],
     });
@@ -43,11 +50,21 @@ router.post("/:postId/comment", isLoggedIn, async (req, res) => {
     if (!post) {
       return res.status(403).send("존재하지 않는 게시글입니다.");
     }
-    const comment = await Post.create({
+    const comment = await Comment.create({
       content: req.body.content,
-      PostId: req.params.postId,
+      PostId: parseInt(req.params.postId, 10),
+      UserId: req.user.id,
     });
-    res.status(201).json(comment);
+    const fullComment = await Comment.findOne({
+      where: { id: comment.id },
+      include: [
+        {
+          model: User, // 댓글의 작성자 정보 가져오기
+          attributes: ["id", "nickname"],
+        },
+      ],
+    });
+    res.status(201).json(fullComment);
   } catch (err) {
     console.error(err);
     next(err);

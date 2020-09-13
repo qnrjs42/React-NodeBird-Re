@@ -71,22 +71,22 @@ export const logoutRequestAction = () => {
   };
 };
 
-const dummyUser = (data) => ({
-  ...data,
-  nickname: "제로초",
-  id: 1,
-  Posts: [{ id: 1 }],
-  Followings: [
-    { nickname: "부기초" },
-    { nickname: "부기초2" },
-    { nickname: "부기초3" },
-  ],
-  Followers: [
-    { nickname: "부기초" },
-    { nickname: "부기초2" },
-    { nickname: "부기초3" },
-  ],
-});
+// const dummyUser = (data) => ({
+//   ...data,
+//   nickname: "제로초",
+//   id: 1,
+//   Posts: [{ id: 1 }],
+//   Followings: [
+//     { nickname: "부기초" },
+//     { nickname: "부기초2" },
+//     { nickname: "부기초3" },
+//   ],
+//   Followers: [
+//     { nickname: "부기초" },
+//     { nickname: "부기초2" },
+//     { nickname: "부기초3" },
+//   ],
+// });
 
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
