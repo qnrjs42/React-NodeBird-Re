@@ -35,6 +35,11 @@ router.get("/", async (req, res, next) => {
             },
           ],
         },
+        {
+          model: User, // 좋아요 작성자
+          as: "Likers",
+          attributes: ["id"],
+        },
       ],
     });
     console.log("posts", posts);
