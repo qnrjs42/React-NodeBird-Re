@@ -6,6 +6,47 @@ const passport = require("passport");
 
 const router = express.Router();
 
+// GET /user
+router.get("/", async (req, res, next) => {
+  try {
+    // 로그인 사용자가 새로고침 했을 때
+    if (req.user) {
+      // 비밀번호만 제외한 유저 정보
+      const fullUserWithoutPassword = await User.findOne({
+        where: { id: req.user.id },
+        // attributes: ['id', 'nickname', 'email'], // user 테이블에서 id, nickname, email만 가져오기
+        attributes: {
+          exclude: ["password"], // user 테이블에서 password만 안 가져오기
+        },
+        include: [
+          // 합쳐주기
+          {
+            model: Post, // 게시글
+            attributes: ["id"], // 게시글의 id만 가져옴 (숫자만 필요하기 때문)
+          },
+          {
+            model: User, // 팔로잉
+            as: "Followings",
+            attributes: ["id"], // 팔로잉 id만 가져옴 (숫자만 필요하기 때문)
+          },
+          {
+            model: User, // 팔로워
+            as: "Followers",
+            attributes: ["id"], // 팔로워 id만 가져옴 (숫자만 필요하기 때문)
+          },
+        ],
+      });
+
+      res.status(200).json(fullUserWithoutPassword);
+    } else {
+      res.status(200).json(null); // 로그인하지 않았으면 아무것도 안 보내준다
+    }
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
 // POST /user/login
 // err: 서버 에러
 // user: 성공
@@ -42,14 +83,17 @@ router.post("/login", isNotLoggedIn, (req, res, next) => {
           // 합쳐주기
           {
             model: Post, // 게시글
+            attributes: ["id"], // 게시글의 id만 가져옴 (숫자만 필요하기 때문)
           },
           {
             model: User, // 팔로잉
             as: "Followings",
+            attributes: ["id"], // 팔로잉 id만 가져옴 (숫자만 필요하기 때문)
           },
           {
             model: User, // 팔로워
             as: "Followers",
+            attributes: ["id"], // 팔로워 id만 가져옴 (숫자만 필요하기 때문)
           },
         ],
       });
