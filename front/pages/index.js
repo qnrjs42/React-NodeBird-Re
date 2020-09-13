@@ -50,7 +50,7 @@ const Home = () => {
       // remove 하지 않으면 add한게 계속 메모리에 쌓임
       window.removeEventListener("scroll", onScroll);
     };
-  }, [hasMorePosts]);
+  }, [hasMorePosts, loadPostsLoading, mainPosts]);
 
   return (
     <AppLayout>

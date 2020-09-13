@@ -137,4 +137,21 @@ router.post("/logout", isLoggedIn, (req, res, next) => {
   res.send("로그아웃 성공");
 });
 
+router.patch("/nickname", isLoggedIn, async (req, res, next) => {
+  try {
+    await User.update(
+      {
+        nickname: req.body.nickname,
+      },
+      {
+        where: { id: req.user.id }, // 내 아이디의 닉네임
+      }
+    );
+    res.status(200).json({ nickname: req.body.nickname });
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
 module.exports = router;

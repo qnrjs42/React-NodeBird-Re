@@ -77,7 +77,7 @@ router.post("/:postId/comment", isLoggedIn, async (req, res) => {
 });
 
 // PATCH /post/1/like
-router.patch("/:postId/like", async (req, res, next) => {
+router.patch("/:postId/like", isLoggedIn, async (req, res, next) => {
   try {
     const post = await Post.findOne({ where: { id: req.params.postId } });
     // 게시글이 없는데 좋아요 눌렀을 때
@@ -94,7 +94,7 @@ router.patch("/:postId/like", async (req, res, next) => {
 });
 
 // DELETE /post/1/like
-router.delete("/:postId/like", async (req, res, next) => {
+router.delete("/:postId/like", isLoggedIn, async (req, res, next) => {
   try {
     try {
       const post = await Post.findOne({ where: { id: req.params.postId } });
@@ -116,10 +116,19 @@ router.delete("/:postId/like", async (req, res, next) => {
 });
 
 // DELETE /post
-router.delete("/", (req, res) => {
-  res.json({
-    id: 1,
-  });
+router.delete("/:postId", isLoggedIn, async (req, res, next) => {
+  try {
+    await Post.destroy({
+      where: {
+        id: req.params.postId, // 게시글 Id
+        UserId: req.user.id, // 내 아이디, 즉 내 아이디로 쓴 게시글이면
+      },
+    });
+    res.json({ PostId: parseInt(req.params.postId, 10) });
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
 });
 
 module.exports = router;

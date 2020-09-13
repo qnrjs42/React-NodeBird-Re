@@ -112,10 +112,7 @@ function* addPost(action) {
 
     yield put({
       type: ADD_POST_SUCCESS,
-      data: {
-        id,
-        content: result.data,
-      },
+      data: result.data,
     });
     yield put({
       type: ADD_POST_TO_ME,
@@ -130,19 +127,19 @@ function* addPost(action) {
 }
 
 function removePostAPI(data) {
-  return axios.delete("/api/post", data);
+  return axios.delete(`/post/${data}`);
 }
 
 function* removePost(action) {
   try {
-    // const result = yield call(removePostAPI, action.data);
+    const result = yield call(removePostAPI, action.data);
     // 성공 결과: result.data
     // 실패 결과: err.response.data
-    yield delay(1000);
+    // yield delay(1000);
 
     yield put({
       type: REMOVE_POST_SUCCESS,
-      data: action.data,
+      data: result.data,
     });
     yield put({
       type: REMOVE_POST_OF_ME,

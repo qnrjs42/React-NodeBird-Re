@@ -48,11 +48,11 @@ const AppLayout = ({ children }) => {
           </Col>
           <Col xs={24} md={6}>
             <a
-              href="https://www.naver.com"
+              href="https://github.com/qnrjs42"
               target="_blank"
               rel="noreferrer noopner"
             >
-              Made by Naver
+              Made by qnrjs42
             </a>
           </Col>
         </Row>
