@@ -92,6 +92,8 @@ export const ADD_COMMENT_REQUEST = "ADD_COMMENT_REQUEST";
 export const ADD_COMMENT_SUCCESS = "ADD_COMMENT_SUCCESS";
 export const ADD_COMMENT_FAILURE = "ADD_COMMENT_FAILURE";
 
+export const REMOVE_IMAGE = "REMOVE_IMAGE"; // 동기 액션이라 하나만 만들어도 된다
+
 export const addPost = (data) => ({
   type: ADD_POST_REQUEST,
   data,
@@ -125,13 +127,17 @@ export const addComment = (data) => ({
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
+      case REMOVE_IMAGE:
+        draft.imagePaths = draft.imagePaths.filter((v, i) => i !== action.data);
+        break;
+
       case UPLOAD_IMAGES_REQUEST:
         draft.uploadImagesLoading = true;
         draft.uploadImagesDone = false;
         draft.uploadImagesError = null;
         break;
       case UPLOAD_IMAGES_SUCCESS: {
-        draft.imagePath = action.data;
+        draft.imagePaths = action.data;
         draft.uploadImagesLoading = false;
         draft.uploadImagesDone = true;
         break;
@@ -201,6 +207,7 @@ const reducer = (state = initialState, action) => {
         draft.addPostDone = true;
         // draft.mainPosts.unshift(dummyPost(action.data)); // 게시글 쓰자마자 제일 위에 보이기 위해 dummyPost를 첫 번재 파라미터에 쓴다
         draft.mainPosts.unshift(action.data); // 실제 데이터
+        draft.imagePaths = [];
         break;
       case ADD_POST_FAILURE:
         draft.addPostLoading = false;

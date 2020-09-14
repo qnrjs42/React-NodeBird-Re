@@ -17,13 +17,41 @@ try {
   fs.mkdirSync("uploads");
 }
 
+const upload = multer({
+  storage: multer.diskStorage({
+    destination(req, file, done) {
+      done(null, "uploads"); // uploads라는 폴더에 저장
+    },
+    filename(req, file, done) {
+      // 똑같은 파일명 방지, 파일명 뒤에 시간 추가
+      const ext = path.extname(file.originalname); // 확장자 추출(.png)
+      const basename = path.basename(file.originalname, ext); // 파일명 (제로초)
+      done(null, basename + "_" + new Date().getTime() + ext); // 제로초15184712891.png
+    },
+  }),
+  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
+});
+
 // POST /post
-router.post("/", isLoggedIn, async (req, res, next) => {
+router.post("/", isLoggedIn, upload.none(), async (req, res, next) => {
   try {
     const post = await Post.create({
       content: req.body.content,
       UserId: req.user.id,
     });
+    if (req.body.image) {
+      if (Array.isArray(req.body.image)) {
+        // 이미지를 여러 개 올리면 image: [제로초.png, 부기초.png] 배열식으로 올라간다
+        const images = await Promise.all(
+          req.body.image.map((image) => Image.create({ src: image }))
+        );
+        await post.addImages(images);
+      } else {
+        // 이미지를 하나만 올리면 image: 제로초.png 배열이 아님
+        const image = await Image.create({ src: req.body.image });
+        await post.addImages(image);
+      }
+    }
     const fullPost = await Post.findOne({
       where: { id: post.id },
       include: [
@@ -57,20 +85,6 @@ router.post("/", isLoggedIn, async (req, res, next) => {
   }
 });
 
-const upload = multer({
-  storage: multer.diskStorage({
-    destination(req, file, done) {
-      done(null, "uploads"); // uploads라는 폴더에 저장
-    },
-    filename(req, file, done) {
-      // 똑같은 파일명 방지, 파일명 뒤에 시간 추가
-      const ext = path.extname(file.originalname); // 확장자 추출(.png)
-      const basename = path.basename(file.originalname, ext); // 파일명 (제로초)
-      done(null, basename + new Date().getTime()); // 제로초202009141235201.png
-    },
-  }),
-  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
-});
 // upload.array("image")에서 image는 PostForm의 input name="image"
 // upload.single('image') | 이미지 1개만 올릴 때
 // upload.none() | 텍스트나 json
@@ -81,7 +95,7 @@ router.post(
   async (req, res, next) => {
     try {
       console.log(req.files);
-      res.json(req.file.map((v) => v.filename));
+      res.json(req.files.map((v) => v.filename));
     } catch (err) {
       console.error(err);
       next(err);

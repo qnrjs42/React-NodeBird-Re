@@ -126,7 +126,7 @@ function* loadPosts(action) {
 
 function addPostAPI(data) {
   // req.body.content가 data의 이름을 정의
-  return axios.post("/post", { content: data });
+  return axios.post("/post", data);
 }
 
 function* addPost(action) {

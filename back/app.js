@@ -4,6 +4,7 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 const dotenv = require("dotenv");
+const path = require("path");
 
 const db = require("./models");
 const postRouter = require("./routes/post");
@@ -30,6 +31,7 @@ app.use(
     credentials: true, // cors 쿠키도 같이 전송
   })
 );
+app.use("/", express.static(path.join(__dirname, "uploads")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
