@@ -1,4 +1,5 @@
 const express = require("express");
+const { Op } = require("sequelize");
 
 const { Post, User, Image, Comment } = require("../models");
 
@@ -7,9 +8,15 @@ const router = express.Router();
 // GET /posts
 router.get("/", async (req, res, next) => {
   try {
+    const where = {};
+
+    if (parseInt(req.query.lastId, 10)) {
+      // 초기 로딩이 아닐 때
+      where.id = { [Op.lt]: parseInt(req.query.lastId, 10) }; // id가 lastId보다 작은 조건
+    }
     const posts = await Post.findAll({
       // limit과 offset은 게시글 중간에 추가, 삭제 문제로 사용하지 않는다
-      //   where: { id: lastId },
+      where,
       limit: 10, // 10개씩 불러오기
       //   offset: 0, // 0번 게시글부터 9번게시글까지(시작 범위)
       order: [

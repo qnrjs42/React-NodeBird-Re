@@ -47,8 +47,10 @@ const Home = () => {
       ) {
         // 로딩이 되고 있을 때는 실행이 안 되게 막음
         if (hasMorePosts && !loadPostsLoading) {
+          const lastId = mainPosts[mainPosts.length - 1]?.id;
           dispatch({
             type: LOAD_POSTS_REQUEST,
+            lastId,
           });
         }
       }
