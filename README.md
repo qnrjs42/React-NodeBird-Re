@@ -605,3 +605,31 @@ _-------------------------------------------------------------------------------
 hooks보다 아래에 return을 써줘야 한다
 
 hooks: useCallback, useMemo
+
+_-------------------------------------------------------------------------------------------------------------------------_
+
+## 반복문안에서 데이터를 넘기고 싶을 때 (고차함수)
+
+반복문안에서 onClick()을 통해 반복문에 대한 데이터 넘겨줘야할 때
+
+```react
+// /front/component/FollowList.js
+
+const onCancel = () => () => {
+  dispatch({
+    type: UNFOLLOW_REQUEST,
+  });
+};
+
+renderItem={(item) => (
+  <List.Item style={{ marginTop: 20 }}>
+    <Card
+      actions={[
+        <StopOutlined key="stop" onClick={onCancel(item.id)} />,
+      ]}
+    >
+      <Card.Meta description={item.nickname} />
+    </Card>
+  </List.Item>
+)}
+```

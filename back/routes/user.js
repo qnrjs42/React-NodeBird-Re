@@ -137,6 +137,7 @@ router.post("/logout", isLoggedIn, (req, res, next) => {
   res.send("로그아웃 성공");
 });
 
+// PTACT /user/nickname
 router.patch("/nickname", isLoggedIn, async (req, res, next) => {
   try {
     await User.update(
@@ -148,6 +149,86 @@ router.patch("/nickname", isLoggedIn, async (req, res, next) => {
       }
     );
     res.status(200).json({ nickname: req.body.nickname });
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
+// PTACT /user/1/follow
+router.patch("/:userId/follow", isLoggedIn, async (req, res, next) => {
+  try {
+    const user = await User.findOne({ where: { id: req.params.userId } });
+    if (!user) {
+      res.status(403).send("존재 하지 않는 유저를 팔로우 할 수 없습니다.");
+    }
+    await user.addFollowers(req.user.id);
+
+    res.status(200).json({ UserId: parseInt(req.params.userId, 10) });
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
+// DELETE /user/1/follow
+router.delete("/:userId/follow", isLoggedIn, async (req, res, next) => {
+  try {
+    const user = await User.findOne({ where: { id: req.params.userId } });
+    if (!user) {
+      res.status(403).send("존재 하지 않는 유저를 언팔로우 할 수 없습니다.");
+    }
+    await user.removeFollowers(req.user.id);
+
+    res.status(200).json({ UserId: parseInt(req.params.userId, 10) });
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
+// DELETE /user/follower/2
+router.delete("/follower/:userId", isLoggedIn, async (req, res, next) => {
+  try {
+    const user = await User.findOne({ where: { id: req.params.userId } });
+    if (!user) {
+      res.status(403).send("존재 하지 않는 유저를 차단 할 수 없습니다.");
+    }
+    await user.removeFollowings(req.user.id);
+
+    res.status(200).json({ UserId: parseInt(req.params.userId, 10) });
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
+// GET /user/followers
+router.get("/followers", isLoggedIn, async (req, res, next) => {
+  try {
+    const user = await User.findOne({ where: { id: req.user.id } });
+    if (!user) {
+      res.status(403).send("존재 하지 않는 유저를 언팔로우 할 수 없습니다.");
+    }
+    const followers = await user.getFollowers();
+
+    res.status(200).json(followers);
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
+// GET /user/followings
+router.get("/followings", isLoggedIn, async (req, res, next) => {
+  try {
+    const user = await User.findOne({ where: { id: req.user.id } });
+    if (!user) {
+      res.status(403).send("존재 하지 않는 유저를 언팔로우 할 수 없습니다.");
+    }
+    const followings = await user.getFollowings();
+
+    res.status(200).json(followings);
   } catch (err) {
     console.error(err);
     next(err);
