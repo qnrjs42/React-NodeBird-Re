@@ -5,7 +5,7 @@ const fs = require("fs");
 
 const { isLoggedIn } = require("./middlewares");
 
-const { Post, Image, Comment, User } = require("../models");
+const { Post, Image, Comment, User, Hashtag } = require("../models");
 
 const router = express.Router();
 
@@ -35,10 +35,24 @@ const upload = multer({
 // POST /post
 router.post("/", isLoggedIn, upload.none(), async (req, res, next) => {
   try {
+    const hashtags = req.body.content.match(/#[^\s#]+/g);
     const post = await Post.create({
       content: req.body.content,
       UserId: req.user.id,
     });
+    if (hashtags) {
+      const result = await Promise.all(
+        hashtags.map(
+          (tag) =>
+            // DB에는 소문자로만 저장 (찾기 쉽게)
+            Hashtag.findOrCreate({
+              where: { name: tag.slice(1).toLowerCase() },
+            }) // findOrCreate: 있으면 가져오고 없으면 등록
+          // findOrCreate 결과: [[노드, true], [리액트, true]]
+        )
+      );
+      await post.addHashtags(result.map((v) => v[0]));
+    }
     if (req.body.image) {
       if (Array.isArray(req.body.image)) {
         // 이미지를 여러 개 올리면 image: [제로초.png, 부기초.png] 배열식으로 올라간다
