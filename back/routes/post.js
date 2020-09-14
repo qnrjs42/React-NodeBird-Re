@@ -1,10 +1,21 @@
 const express = require("express");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
 
 const { isLoggedIn } = require("./middlewares");
 
 const { Post, Image, Comment, User } = require("../models");
 
 const router = express.Router();
+
+try {
+  // uploads 폴더가 없으면 생성, 있으면 선택
+  fs.accessSync("uploads");
+} catch (err) {
+  console.log("uploads 폴더가 없으므로 생성합니다.");
+  fs.mkdirSync("uploads");
+}
 
 // POST /post
 router.post("/", isLoggedIn, async (req, res, next) => {
@@ -45,6 +56,38 @@ router.post("/", isLoggedIn, async (req, res, next) => {
     next(err);
   }
 });
+
+const upload = multer({
+  storage: multer.diskStorage({
+    destination(req, file, done) {
+      done(null, "uploads"); // uploads라는 폴더에 저장
+    },
+    filename(req, file, done) {
+      // 똑같은 파일명 방지, 파일명 뒤에 시간 추가
+      const ext = path.extname(file.originalname); // 확장자 추출(.png)
+      const basename = path.basename(file.originalname, ext); // 파일명 (제로초)
+      done(null, basename + new Date().getTime()); // 제로초202009141235201.png
+    },
+  }),
+  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
+});
+// upload.array("image")에서 image는 PostForm의 input name="image"
+// upload.single('image') | 이미지 1개만 올릴 때
+// upload.none() | 텍스트나 json
+router.post(
+  "/images",
+  isLoggedIn,
+  upload.array("image"),
+  async (req, res, next) => {
+    try {
+      console.log(req.files);
+      res.json(req.file.map((v) => v.filename));
+    } catch (err) {
+      console.error(err);
+      next(err);
+    }
+  }
+);
 
 // POST /post/1/comment
 router.post("/:postId/comment", isLoggedIn, async (req, res) => {
