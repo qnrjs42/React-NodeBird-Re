@@ -117,6 +117,88 @@ router.post(
   }
 );
 
+// POST /post/1/retweet
+router.post("/:postId/retweet", isLoggedIn, async (req, res) => {
+  try {
+    const post = await Post.findOne({
+      where: { id: req.params.postId },
+      include: [
+        {
+          model: Post,
+          as: "Retweet",
+        },
+      ],
+    });
+    if (!post) {
+      return res.status(403).send("존재하지 않는 게시글입니다.");
+    }
+
+    // req.user.id === post.UserId : 자기 게시글 리트윗
+    // post.Retweet && post.Retweet.UserId === req.user.id : 자기 게시글을 리트윗한 다른 게시글을 다시 자기가 리트윗
+    if (
+      req.user.id === post.UserId ||
+      (post.Retweet && post.Retweet.UserId === req.user.id)
+    ) {
+      return res.status(403).send("자신의 글은 리트윗할 수 없습니다.");
+    }
+    // 남의 게시글을 리트윗한 다른 사람의 게시글을 다시 리트윗
+    const retweetTargetId = post.RetweetId || post.id;
+    const exPost = await Post.findOne({
+      where: {
+        UserId: req.user.id,
+        RetweetId: retweetTargetId,
+      },
+    });
+    // 이미 리트윗한 게시글을 또 리트윗 막음
+    if (exPost) {
+      return res.status(403).send("이미 리트윗했습니다.");
+    }
+    const retweet = await Post.create({
+      UserId: req.user.id,
+      RetweetId: retweetTargetId,
+      content: "retweet",
+    });
+    const retweetWithPrevPost = await Post.findOne({
+      where: { id: retweet.id },
+      include: [
+        {
+          model: Post,
+          as: "Retweet",
+          include: [
+            {
+              model: User,
+              attributes: ["id", "nickname"],
+            },
+            {
+              model: Image,
+            },
+          ],
+        },
+        {
+          model: User,
+          attributes: ["id", "nickname"],
+        },
+        {
+          model: Image,
+        },
+        {
+          model: Comment,
+          include: [
+            {
+              model: User,
+              attributes: ["id", "nickname"],
+            },
+          ],
+        },
+      ],
+    });
+    res.status(201).json(retweetWithPrevPost);
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
 // POST /post/1/comment
 router.post("/:postId/comment", isLoggedIn, async (req, res) => {
   try {
