@@ -1,11 +1,13 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { END } from "redux-saga";
 
 import AppLayout from "../components/AppLayout";
 import PostCard from "../components/PostCard";
 import PostForm from "../components/PostForm";
 import { LOAD_POSTS_REQUEST } from "../reducers/post";
 import { LOAD_MY_INFO_REQUEST } from "../reducers/user";
+import wrapper from "../store/configureStore";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -22,15 +24,6 @@ const Home = () => {
       alert(retweetError);
     }
   }, [retweetError]);
-
-  useEffect(() => {
-    dispatch({
-      type: LOAD_MY_INFO_REQUEST,
-    });
-    dispatch({
-      type: LOAD_POSTS_REQUEST,
-    });
-  }, []);
 
   useEffect(() => {
     function onScroll() {
@@ -72,5 +65,23 @@ const Home = () => {
     </AppLayout>
   );
 };
+
+// getServerSideProps가 Home보다 먼저 실행된다
+export const getServerSideProps = wrapper.getServerSideProps(
+  async (context) => {
+    console.log("context", context);
+
+    context.store.dispatch({
+      type: LOAD_MY_INFO_REQUEST,
+    });
+    context.store.dispatch({
+      type: LOAD_POSTS_REQUEST,
+    });
+
+    // REQUEST가 SUCCESS가 될 때까지 기다려줌
+    context.store.dispatch(END);
+    await context.store.sagaTask.toPromise(); // 해당 코드는 store/configureStore - store.sagaTask = sagaMiddleware.run(rootSaga);
+  }
+);
 
 export default Home;

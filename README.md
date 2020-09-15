@@ -633,3 +633,103 @@ renderItem={(item) => (
   </List.Item>
 )}
 ```
+
+_-------------------------------------------------------------------------------------------------------------------------_
+
+## NEXTjs SSR 적용
+
+```javascript
+// /front/pages/_app.js
+
+next-redux-saga 모듈 필요 없어짐
+```
+
+있어도 상관 없지만 dependencies 모듈이라 배포할 때 껴서 되기때문에 필요없으니깐 지워주도록 한다.
+
+_-------------------------------------------------------------------------------------------------------------------------_
+
+## Component 렌더링 전에 데이터 로드
+
+화면에 그려지기 전에 먼저 데이터를 불러온다면 데이터가 채워진 채로 화면이 그려진다.
+
+Component보다 먼저 렌더링 실행하는 함수: getInitialProps
+하지만 곧 없어질 예정
+
+그 대신 Next 9버전 부터 새로운 함수가 나옴
+
+```javascript
+// /front/pages/index.js
+
+import wrapper from "../store/configureStore";
+
+const Home = () => {
+  ...
+
+  // getServerSideProps를 사용하게 되면 이 부분에서 useEffect는 안 쓰고 getServerSideProps안에서 사용
+  //   useEffect(() => {
+  //   dispatch({
+  //     type: LOAD_MY_INFO_REQUEST,
+  //   });
+  //   dispatch({
+  //     type: LOAD_POSTS_REQUEST,
+  //   });
+  // }, []);
+
+  return () {
+    ...
+  }
+};
+
+// getServerSideProps가 Home보다 먼저 실행된다
+export const getServerSideProps = wrapper.getServerSideProps((context) => {
+  context.store.dispatch({
+    type: LOAD_MY_INFO_REQUEST,
+  });
+  context.store.dispatch({
+    type: LOAD_POSTS_REQUEST,
+  });
+});
+
+export default Home;
+```
+
+context.store 정보가 들어있는 것들을 reducers/index.js - HYDRATE 액션이 실행되면서 정보들을 받는다
+
+```javascript
+// /front/reducers/index.js
+
+// 아래 코드는 index - index, user, post로 구성 되어있어서 덮어쓰기에 문제가 발생
+// const rootReducer = combineReducers({
+//   index: (state = {}, action) => {
+//     switch (action.type) {
+//       case HYDRATE:
+//         console.log("HYDRATE", action);
+//         return {
+//           ...state,
+//           ...action.payload,
+//         };
+
+//       default:
+//         return state;
+//     }
+//   },
+//   user,
+//   post,
+// });
+
+// 아래 코드를 해야 rootReducer 상태 전체를 덮어씌울 수 있음
+const rootReducer = (state, action) => {
+  switch (action.type) {
+    case HYDRATE:
+      console.log("HYDRATE", action);
+      return action.payload;
+    default: {
+      const combineReducer = combineReducers({
+        user,
+        post,
+      });
+      return combineReducer(state, action);
+    }
+  }
+};
+```
