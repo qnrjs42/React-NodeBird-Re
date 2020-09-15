@@ -747,19 +747,21 @@ _-------------------------------------------------------------------------------
 ## SSR 쿠키 공유 [getServerSideProps]
 
 ```javascript
-// getServerSideProps가 Home보다 먼저 실행된다
-export const getServerSideProps = wrapper.getServerSideProps(
-  async (context) => {
-    const cookie = context.req ? context.req.headers.cookie : "";
-    axios.defaults.headers.Cookie = "";
-    // 쿠키 공유 방지
-    if (context.req && cookie) {
-      axios.defaults.headers.Cookie = cookie;
-    }
+// /front/pages/index.js
 
-    ...
-  }
-);
+// getServerSideProps가 Home보다 먼저 실행된다
+export const getServerSideProps = wrapper.getServerSideProps((context) => {
+  context.store.dispatch({
+    type: LOAD_MY_INFO_REQUEST,
+  });
+  context.store.dispatch({
+    type: LOAD_POSTS_REQUEST,
+  });
+
+  // REQUEST가 SUCCESS가 될 때까지 기다려줌
+  context.store.dispatch(END);
+  await context.store.sagaTask.toPromise(); // 해당 코드는 store/configureStore - store.sagaTask = sagaMiddleware.run(rootSaga);
+});
 ```
 
 _-------------------------------------------------------------------------------------------------------------------------_
@@ -770,6 +772,7 @@ getServerSideProps: 접속할 때마다 접속한 상황에 따라서 화면이 
 getStaticProps: 언제 접속해도 데이터가 바뀔 일이 없을 때 사용, 게시글 하나 올려두고 계속 두는 것 (사용하기 까다로움, 잘 안 씀)
 
 ```javascript
+// /front/pages/about.js
 export const getStaticProps = wrapper.getStaticProps(async (context) => {
   console.log("getStaticProps");
   context.store.dispatch({
@@ -780,3 +783,9 @@ export const getStaticProps = wrapper.getStaticProps(async (context) => {
   await context.store.sagaTask.toPromise();
 });
 ```
+
+_-------------------------------------------------------------------------------------------------------------------------_
+
+## 동적(다이나믹) 라우팅
+
+// /front/pages/post/[id].js
