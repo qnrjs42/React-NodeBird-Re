@@ -31,6 +31,9 @@ import {
   REMOVE_FOLLOWER_REQUEST,
   REMOVE_FOLLOWER_SUCCESS,
   REMOVE_FOLLOWER_FAILURE,
+  LOAD_USER_REQUEST,
+  LOAD_USER_SUCCESS,
+  LOAD_USER_FAILURE,
 } from "../reducers/user";
 
 function removeFollowerAPI(data) {
@@ -127,13 +130,13 @@ function* changeNickname(action) {
   }
 }
 
-function loadUserAPI() {
+function loadMyInfoAPI() {
   return axios.get("/user");
 }
 
-function* loadUser() {
+function* loadMyInfo() {
   try {
-    const result = yield call(loadUserAPI);
+    const result = yield call(loadMyInfoAPI);
     // 성공 결과: result.data
     // 실패 결과: err.response.data
     // yield delay(1000);
@@ -145,6 +148,29 @@ function* loadUser() {
   } catch (err) {
     yield put({
       type: LOAD_MY_INFO_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function loadUserAPI(data) {
+  return axios.get(`/user/${data}`);
+}
+
+function* loadUser(action) {
+  try {
+    const result = yield call(loadUserAPI, action.data);
+    // 성공 결과: result.data
+    // 실패 결과: err.response.data
+    // yield delay(1000);
+
+    yield put({
+      type: LOAD_USER_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: LOAD_USER_FAILURE,
       error: err.response.data,
     });
   }
@@ -285,8 +311,12 @@ function* watchChangeNickname() {
   yield takeLatest(CHANGE_NICKNAME_REQUEST, changeNickname);
 }
 
+function* watchLoadMyInfo() {
+  yield takeLatest(LOAD_MY_INFO_REQUEST, loadMyInfo);
+}
+
 function* watchLoadUser() {
-  yield takeLatest(LOAD_MY_INFO_REQUEST, loadUser);
+  yield takeLatest(LOAD_USER_REQUEST, loadUser);
 }
 
 function* watchFollow() {
@@ -315,6 +345,7 @@ export default function* userSaga() {
     fork(watchLoadFollowers),
     fork(watchLoadFollowings),
     fork(watchChangeNickname),
+    fork(watchLoadMyInfo),
     fork(watchLoadUser),
     fork(watchFollow),
     fork(watchUnFollow),

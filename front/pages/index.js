@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { END } from "redux-saga";
+import axios from "axios";
 
 import AppLayout from "../components/AppLayout";
 import PostCard from "../components/PostCard";
@@ -69,7 +70,12 @@ const Home = () => {
 // getServerSideProps가 Home보다 먼저 실행된다
 export const getServerSideProps = wrapper.getServerSideProps(
   async (context) => {
-    console.log("context", context);
+    const cookie = context.req ? context.req.headers.cookie : "";
+    axios.defaults.headers.Cookie = "";
+    // 쿠키 공유 방지
+    if (context.req && cookie) {
+      axios.defaults.headers.Cookie = cookie;
+    }
 
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,

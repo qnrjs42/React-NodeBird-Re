@@ -660,6 +660,7 @@ Component보다 먼저 렌더링 실행하는 함수: getInitialProps
 ```javascript
 // /front/pages/index.js
 
+import { END } from "redux-saga";
 import wrapper from "../store/configureStore";
 
 const Home = () => {
@@ -688,10 +689,17 @@ export const getServerSideProps = wrapper.getServerSideProps((context) => {
   context.store.dispatch({
     type: LOAD_POSTS_REQUEST,
   });
+
+  // REQUEST가 SUCCESS가 될 때까지 기다려줌
+  context.store.dispatch(END);
+  await context.store.sagaTask.toPromise(); // 해당 코드는 store/configureStore - store.sagaTask = sagaMiddleware.run(rootSaga);
 });
 
 export default Home;
 ```
+
+getServerSideProps는 순전히 프론트 서버에서만 실행이 되고,
+Home은 브라우저와 프론트 서버에서 실행이 된다.
 
 context.store 정보가 들어있는 것들을 reducers/index.js - HYDRATE 액션이 실행되면서 정보들을 받는다
 
@@ -732,4 +740,24 @@ const rootReducer = (state, action) => {
     }
   }
 };
+```
+
+_-------------------------------------------------------------------------------------------------------------------------_
+
+## SSR 쿠키 공유
+
+```javascript
+// getServerSideProps가 Home보다 먼저 실행된다
+export const getServerSideProps = wrapper.getServerSideProps(
+  async (context) => {
+    const cookie = context.req ? context.req.headers.cookie : "";
+    axios.defaults.headers.Cookie = "";
+    // 쿠키 공유 방지
+    if (context.req && cookie) {
+      axios.defaults.headers.Cookie = cookie;
+    }
+
+    ...
+  }
+);
 ```
