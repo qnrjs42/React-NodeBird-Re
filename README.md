@@ -744,7 +744,7 @@ const rootReducer = (state, action) => {
 
 _-------------------------------------------------------------------------------------------------------------------------_
 
-## SSR 쿠키 공유
+## SSR 쿠키 공유 [getServerSideProps]
 
 ```javascript
 // getServerSideProps가 Home보다 먼저 실행된다
@@ -760,4 +760,23 @@ export const getServerSideProps = wrapper.getServerSideProps(
     ...
   }
 );
+```
+
+_-------------------------------------------------------------------------------------------------------------------------_
+
+## SSR 쿠키 공유(2) [getStaticProps]
+
+getServerSideProps: 접속할 때마다 접속한 상황에 따라서 화면이 바껴야할 때 사용 (웬만할 때 사용)
+getStaticProps: 언제 접속해도 데이터가 바뀔 일이 없을 때 사용, 게시글 하나 올려두고 계속 두는 것 (사용하기 까다로움, 잘 안 씀)
+
+```javascript
+export const getStaticProps = wrapper.getStaticProps(async (context) => {
+  console.log("getStaticProps");
+  context.store.dispatch({
+    type: LOAD_USER_REQUEST,
+    data: 1,
+  });
+  context.store.dispatch(END);
+  await context.store.sagaTask.toPromise();
+});
 ```

@@ -47,6 +47,51 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+// GET /user/1
+// 남의 정보 가져오기
+router.get("/:userId", async (req, res, next) => {
+  try {
+    // 비밀번호만 제외한 유저 정보
+    const fullUserWithoutPassword = await User.findOne({
+      where: { id: req.params.userId },
+      // attributes: ['id', 'nickname', 'email'], // user 테이블에서 id, nickname, email만 가져오기
+      attributes: {
+        exclude: ["password"], // user 테이블에서 password만 안 가져오기
+      },
+      include: [
+        // 합쳐주기
+        {
+          model: Post, // 게시글
+          attributes: ["id"], // 게시글의 id만 가져옴 (숫자만 필요하기 때문)
+        },
+        {
+          model: User, // 팔로잉
+          as: "Followings",
+          attributes: ["id"], // 팔로잉 id만 가져옴 (숫자만 필요하기 때문)
+        },
+        {
+          model: User, // 팔로워
+          as: "Followers",
+          attributes: ["id"], // 팔로워 id만 가져옴 (숫자만 필요하기 때문)
+        },
+      ],
+    });
+
+    if (fullUserWithoutPassword) {
+      const data = fullUserWithoutPassword.toJSON(); // json으로 변환
+      data.Posts = data.Posts.length; // posts 자체를 length로 바꿔서 보안 위협 제거
+      data.Followers = data.Followers.length; // Followers 자체를 length로 바꿔서 보안 위협 제거
+      data.Followings = data.Followings.length; // Followings 자체를 length로 바꿔서 보안 위협 제거
+      res.status(200).json(data);
+    } else {
+      res.status(404).json("존재하지 않은 사용자입니다."); // 존재 하지 않은 사용자
+    }
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
 // POST /user/login
 // err: 서버 에러
 // user: 성공
