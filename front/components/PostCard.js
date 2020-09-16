@@ -10,6 +10,7 @@ import {
   HeartTwoTone,
 } from "@ant-design/icons";
 import Link from "next/link";
+import moment from "moment";
 
 import PostImages from "./PostImages";
 import CommentForm from "./CommentForm";
@@ -21,6 +22,8 @@ import {
   RETWEET_REQUEST,
 } from "../reducers/post";
 import FollowButton from "./FollowButton";
+
+moment.locale("ko"); // 한글로 변환
 
 const PostCard = ({ post }) => {
   const dispatch = useDispatch();
@@ -125,7 +128,10 @@ const PostCard = ({ post }) => {
               )
             }
           >
-            <span style={{ float: "right" }}></span>
+            <span style={{ float: "right" }}>
+              {moment(post.createdAt).format("YYYY.MM.DD")}
+            </span>
+
             <Card.Meta
               avatar={<Avatar>{post.Retweet.User.nickname[0]}</Avatar>}
               title={post.Retweet.User.nickname}
@@ -134,7 +140,9 @@ const PostCard = ({ post }) => {
           </Card>
         ) : (
           <>
-            <span style={{ float: "right" }}></span>
+            <span style={{ float: "right" }}>
+              {moment(post.createdAt).format("YYYY.MM.DD")}
+            </span>
             <Card.Meta
               avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
               title={post.User.nickname}
