@@ -836,3 +836,18 @@ load할 때는 편함
 
 단점은 SSR이 힘듦
 SSR은 필요없고 불러와야하는 데이터에서 사용
+
+_-------------------------------------------------------------------------------------------------------------------------_
+
+## next.config.js
+
+next.config.js는 npm run dev나 npm run build할 때 실행된다.
+
+```json
+// /front/package.json
+"build": "ANALYZE=true NODE_ENV=production next build",
+```
+
+근데 리눅스나 맥에서는 되지만 윈도우에서 되지 않는다
+
+되게 하려면 'cross-env' 모듈 설치
