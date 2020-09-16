@@ -44,6 +44,7 @@ export const initialState = {
   removeFollowerLoading: false, // 팔로잉 로드 시도 중
   removeFollowerDone: false,
   removeFollowerError: null,
+
   me: null, // 내 정보
   userInfo: null, // 남의 정보
 };
@@ -149,6 +150,7 @@ const reducer = (state = initialState, action) => {
         draft.loadUserDone = false;
         break;
       case LOAD_USER_SUCCESS:
+        console.log("LOAD_USER_SUCCESS action", action);
         draft.loadUserLoading = false;
         draft.userInfo = action.data;
         draft.loadUserDone = true;

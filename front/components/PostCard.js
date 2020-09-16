@@ -1,5 +1,7 @@
-import { useState, useCallback, useEffect } from "react";
-import { Card, Popover, Button, Comment, List } from "antd";
+import React, { useState, useCallback } from "react";
+import PropTypes from "prop-types";
+import { useSelector, useDispatch } from "react-redux";
+import { Card, Popover, Button, Avatar, List, Comment } from "antd";
 import {
   RetweetOutlined,
   HeartOutlined,
@@ -7,15 +9,14 @@ import {
   EllipsisOutlined,
   HeartTwoTone,
 } from "@ant-design/icons";
-import PropTypes from "prop-types";
-import { useSelector, useDispatch } from "react-redux";
-import Avatar from "antd/lib/avatar/avatar";
+import Link from "next/link";
+
 import PostImages from "./PostImages";
 import CommentForm from "./CommentForm";
 import PostCardContent from "./PostCardContent";
 import {
-  REMOVE_POST_REQUEST,
   LIKE_POST_REQUEST,
+  REMOVE_POST_REQUEST,
   UNLIKE_POST_REQUEST,
   RETWEET_REQUEST,
 } from "../reducers/post";
@@ -23,11 +24,9 @@ import FollowButton from "./FollowButton";
 
 const PostCard = ({ post }) => {
   const dispatch = useDispatch();
-  const id = useSelector((state) => state.user.me?.id);
-  const liked = post.Likers.find((v) => v.id === id); // 게시글에 좋아요 누른 사람 중 내 아이디가 있으면 true
   const { removePostLoading } = useSelector((state) => state.post);
-
   const [commentFormOpened, setCommentFormOpened] = useState(false);
+  const id = useSelector((state) => state.user.me?.id);
 
   const onLike = useCallback(() => {
     if (!id) {
@@ -38,8 +37,7 @@ const PostCard = ({ post }) => {
       data: post.id,
     });
   }, [id]);
-
-  const onUnLike = useCallback(() => {
+  const onUnlike = useCallback(() => {
     if (!id) {
       return alert("로그인이 필요합니다.");
     }
@@ -48,7 +46,6 @@ const PostCard = ({ post }) => {
       data: post.id,
     });
   }, [id]);
-
   const onToggleComment = useCallback(() => {
     setCommentFormOpened((prev) => !prev);
   }, []);
@@ -73,6 +70,7 @@ const PostCard = ({ post }) => {
     });
   }, [id]);
 
+  const liked = post.Likers.find((v) => v.id === id);
   return (
     <div style={{ marginBottom: 20 }}>
       <Card
@@ -82,8 +80,8 @@ const PostCard = ({ post }) => {
           liked ? (
             <HeartTwoTone
               twoToneColor="#eb2f96"
-              key="heartTwoTone"
-              onClick={onUnLike}
+              key="heart"
+              onClick={onUnlike}
             />
           ) : (
             <HeartOutlined key="heart" onClick={onLike} />
@@ -127,6 +125,7 @@ const PostCard = ({ post }) => {
               )
             }
           >
+            <span style={{ float: "right" }}></span>
             <Card.Meta
               avatar={<Avatar>{post.Retweet.User.nickname[0]}</Avatar>}
               title={post.Retweet.User.nickname}
@@ -134,11 +133,14 @@ const PostCard = ({ post }) => {
             />
           </Card>
         ) : (
-          <Card.Meta
-            avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
-            title={post.User.nickname}
-            description={<PostCardContent postData={post.content} />}
-          />
+          <>
+            <span style={{ float: "right" }}></span>
+            <Card.Meta
+              avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
+              title={post.User.nickname}
+              description={<PostCardContent postData={post.content} />}
+            />
+          </>
         )}
       </Card>
       {commentFormOpened && (
@@ -152,7 +154,6 @@ const PostCard = ({ post }) => {
             // post.Comments 내부에 있는게 item
             renderItem={(item) => (
               <li>
-                <o>{console.log("item", item)}</o>
                 <Comment
                   author={item.User.nickname}
                   avatar={<Avatar>{item.User.nickname[0]}</Avatar>}
@@ -163,8 +164,6 @@ const PostCard = ({ post }) => {
           />
         </div>
       )}
-      {/* <CommentForm />
-      <Comments /> */}
     </div>
   );
 };
