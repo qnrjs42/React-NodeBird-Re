@@ -792,4 +792,38 @@ _-------------------------------------------------------------------------------
 
 _-------------------------------------------------------------------------------------------------------------------------_
 
-##
+## URL 주소 한글 사용방법, axios 요청 시 ERR_UNESCAPED_CHARACTERS 에러 해결방법
+
+TypeError [ERR_UNESCAPED_CHARACTERS]: Request path contains unescaped characters
+
+// 크롬-콘솔
+encodeURIComponent('리액트')
+-> "%EB%A6%AC%EC%95%A1%ED%8A%B8"
+
+decodeURIComponent('%EB%A6%AC%EC%95%A1%ED%8A%B8')
+-> '리액트'
+
+```javascript
+// /front/sagas/post.js
+
+function loadHashtagPostsAPI(data, lastId) {
+  return axios.get(
+    `/hashtag/${encodeURIComponent(data)}?lastId=${lastId || 0}`
+  );
+}
+```
+
+```javascript
+// /back/routes/hashtag.js
+
+include: [
+  {
+    model: Hashtag,
+    where: {
+      name: decodeURIComponent(req.params.hashtag),
+    },
+  },
+  ...
+]
+
+```

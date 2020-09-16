@@ -10,6 +10,7 @@ const db = require("./models");
 const postRouter = require("./routes/post");
 const postsRouter = require("./routes/posts");
 const userRouter = require("./routes/user");
+const hashtagRouter = require("./routes/hashtag");
 const passportConfig = require("./passport");
 const passport = require("passport");
 
@@ -49,6 +50,7 @@ app.use(passport.session());
 app.use("/posts", postsRouter); // 여러개 단위 (게시글 불러오기)
 app.use("/post", postRouter); // 1개 단위, (게시글 생성, 삭제, 댓글 생성, 삭제)
 app.use("/user", userRouter);
+app.use("/hashtag", hashtagRouter);
 
 // 에러 처리 미들웨어
 // app.use((err, req, res, next) => {
