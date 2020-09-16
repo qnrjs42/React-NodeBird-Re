@@ -30,7 +30,7 @@ const Signup = () => {
   const [term, setTerm] = useState("");
 
   useEffect(() => {
-    // 로그인 안 한 채로 회원가입 페이지 갔을 때 뒤로가기
+    // 로그인 한 채로 회원가입 페이지 갔을 때 뒤로가기
     if (me && me.id) {
       Router.replace("/");
     }
